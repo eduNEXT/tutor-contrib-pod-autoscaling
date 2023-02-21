@@ -1,0 +1,92 @@
+{%- if POD_AUTOSCALING_LMS_AUTOSCALING %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms
+spec:
+  template:
+    spec:
+      containers:
+        - name: lms
+          resources:
+            requests:
+              memory: {{ POD_AUTOSCALING_LMS_MEMORY_REQUEST }}
+            {%- if POD_AUTOSCALING_LMS_CPU_REQUEST > 0 %}
+              cpu: {{ POD_AUTOSCALING_LMS_CPU_REQUEST }}
+            {%- endif %}
+            limits:
+              memory: {{ POD_AUTOSCALING_LMS_MEMORY_LIMIT }}
+              {%- if POD_AUTOSCALING_LMS_CPU_LIMIT > 0 %}
+              cpu: {{ POD_AUTOSCALING_LMS_CPU_LIMIT }}
+              {% endif %}
+{%- endif %}
+---
+{%- if POD_AUTOSCALING_LMS_WORKER_AUTOSCALING %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms-worker
+spec:
+  template:
+    spec:
+      containers:
+        - name: lms-worker
+          resources:
+            requests:
+              memory: {{ POD_AUTOSCALING_LMS_WORKER_MEMORY_REQUEST }}
+            {%- if POD_AUTOSCALING_LMS_WORKER_CPU_REQUEST > 0 %}
+              cpu: {{ POD_AUTOSCALING_LMS_WORKER_CPU_REQUEST }}
+            {%- endif %}
+            limits:
+              memory: {{ POD_AUTOSCALING_LMS_WORKER_MEMORY_LIMIT }}
+              {%- if POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT > 0 %}
+              cpu: {{ POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT }}
+              {% endif %}
+            {%- endif %}
+
+---
+{%- if POD_AUTOSCALING_CMS_AUTOSCALING %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cms
+spec:
+  template:
+    spec:
+      containers:
+        - name: cms
+          resources:
+            requests:
+              memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_REQUEST }}
+            {%- if POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST > 0 %}
+              cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST }}
+            {%- endif %}
+            limits:
+              memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_LIMIT }}
+              {%- if POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT > 0 %}
+              cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT }}
+              {% endif %}
+{%- endif %}
+---
+{%- if POD_AUTOSCALING_CMS_WORKER_AUTOSCALING %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cms-worker
+spec:
+  template:
+    spec:
+      containers:
+        - name: cms-worker
+          resources:
+            requests:
+              memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_REQUEST }}
+            {%- if POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST > 0 %}
+              cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST }}
+            {%- endif %}
+            limits:
+              memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_LIMIT }}
+              {%- if POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT > 0 %}
+              cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT }}
+              {% endif %}
+{%- endif %}
