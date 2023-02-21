@@ -1,0 +1,2 @@
+recursive-include tutorpod_autoscaling/patches *
+recursive-include tutorpod_autoscaling/templates *
