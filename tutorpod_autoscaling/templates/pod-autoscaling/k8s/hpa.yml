@@ -129,3 +129,4 @@ spec:
         averageValue: {{ POD_AUTOSCALING_CMS_WORKER_AVG_MEMORY }}
   {%- endif %}
 {%- endif %}
+{{ patch("pod-autoscaling-hpa") }}
