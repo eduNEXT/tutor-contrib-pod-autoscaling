@@ -1,0 +1,55 @@
+{%- if RUN_LMS and POD_AUTOSCALING_LMS_VPA %}
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-recommender-lms
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       lms
+  updatePolicy:
+    updateMode: "Auto"
+{%- endif %}
+{%- if RUN_LMS and POD_AUTOSCALING_LMS_WORKER_VPA %}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-recommender-lms-worker
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       lms-worker
+  updatePolicy:
+    updateMode: "Auto"
+{%- endif %}
+{%- if RUN_CMS and POD_AUTOSCALING_CMS_VPA %}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-recommender-cms
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       cms
+  updatePolicy:
+    updateMode: "Auto"
+{%- endif %}
+{%- if RUN_CMS and POD_AUTOSCALING_CMS_WORKER_VPA %}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-recommender-cms-worker
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       cms-worker
+  updatePolicy:
+    updateMode: "Auto"
+{%- endif %}
