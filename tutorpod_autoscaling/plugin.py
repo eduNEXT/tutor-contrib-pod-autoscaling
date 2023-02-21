@@ -39,7 +39,7 @@ config = {
         "LMS_MEMORY_REQUEST": f"{LMS_MEMORY_REQUEST_MB}Mi",
 
         # Kubernetes HPA autoscaling settings
-        "CMS_AUTOSCALING": True,
+        "CMS_HPA": True,
         "CMS_AVG_CPU": 300,
         "CMS_AVG_MEMORY": "",
         "CMS_CPU_LIMIT": 1,
@@ -48,7 +48,7 @@ config = {
         "CMS_MEMORY_LIMIT": f"{CMS_MEMORY_REQUEST_MB * 4}Mi",
         "CMS_MIN_REPLICAS": 1,
 
-        "CMS_WORKER_AUTOSCALING": True,
+        "CMS_WORKER_HPA": True,
         "CMS_WORKER_AVG_CPU": 400,
         "CMS_WORKER_AVG_MEMORY": "", # Disable memory-based autoscaling
         "CMS_WORKER_CPU_LIMIT": 1,
@@ -58,7 +58,7 @@ config = {
         "CMS_WORKER_MEMORY_REQUEST": f"{CMS_WORKER_MEMORY_REQUEST_MB}Mi",
         "CMS_WORKER_MIN_REPLICAS": 1,
 
-        "LMS_AUTOSCALING": True,
+        "LMS_HPA": True,
         "LMS_AVG_CPU": 300,
         "LMS_AVG_MEMORY": "",
         "LMS_CPU_LIMIT": 1,
@@ -67,7 +67,7 @@ config = {
         "LMS_MEMORY_LIMIT": f"{LMS_MEMORY_REQUEST_MB * 4}Mi",
         "LMS_MIN_REPLICAS": 1,
 
-        "LMS_WORKER_AUTOSCALING": True,
+        "LMS_WORKER_HPA": True,
         "LMS_WORKER_AVG_CPU": 400,
         "LMS_WORKER_AVG_MEMORY": "", # Disable memory-based autoscaling
         "LMS_WORKER_CPU_LIMIT": 1,

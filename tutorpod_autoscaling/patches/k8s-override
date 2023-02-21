@@ -1,4 +1,4 @@
-{%- if POD_AUTOSCALING_LMS_AUTOSCALING %}
+{%- if POD_AUTOSCALING_LMS_HPA %}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +21,7 @@ spec:
               {%- endif %}
 {%- endif %}
 ---
-{%- if POD_AUTOSCALING_LMS_WORKER_AUTOSCALING %}
+{%- if POD_AUTOSCALING_LMS_WORKER_HPA %}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,7 +44,7 @@ spec:
               {%- endif %}
 {%- endif %}
 ---
-{%- if POD_AUTOSCALING_CMS_AUTOSCALING %}
+{%- if POD_AUTOSCALING_CMS_HPA %}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,7 +67,7 @@ spec:
               {%- endif %}
 {%- endif %}
 ---
-{%- if POD_AUTOSCALING_CMS_WORKER_AUTOSCALING %}
+{%- if POD_AUTOSCALING_CMS_WORKER_HPA %}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
