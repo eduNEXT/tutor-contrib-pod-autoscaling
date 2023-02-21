@@ -18,7 +18,7 @@ spec:
               memory: {{ POD_AUTOSCALING_LMS_MEMORY_LIMIT }}
               {%- if POD_AUTOSCALING_LMS_CPU_LIMIT > 0 %}
               cpu: {{ POD_AUTOSCALING_LMS_CPU_LIMIT }}
-              {% endif %}
+              {%- endif %}
 {%- endif %}
 ---
 {%- if POD_AUTOSCALING_LMS_WORKER_AUTOSCALING %}
@@ -41,9 +41,8 @@ spec:
               memory: {{ POD_AUTOSCALING_LMS_WORKER_MEMORY_LIMIT }}
               {%- if POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT > 0 %}
               cpu: {{ POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT }}
-              {% endif %}
-            {%- endif %}
-
+              {%- endif %}
+{%- endif %}
 ---
 {%- if POD_AUTOSCALING_CMS_AUTOSCALING %}
 apiVersion: apps/v1
@@ -65,7 +64,7 @@ spec:
               memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_LIMIT }}
               {%- if POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT > 0 %}
               cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT }}
-              {% endif %}
+              {%- endif %}
 {%- endif %}
 ---
 {%- if POD_AUTOSCALING_CMS_WORKER_AUTOSCALING %}
@@ -88,5 +87,5 @@ spec:
               memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_LIMIT }}
               {%- if POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT > 0 %}
               cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT }}
-              {% endif %}
+              {%- endif %}
 {%- endif %}

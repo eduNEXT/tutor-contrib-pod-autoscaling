@@ -63,7 +63,7 @@ spec:
         averageValue: {{ POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY }}
   {%- endif %}
 {%- endif %}
-{% if RUN_CMS and POD_AUTOSCALING_CMS_AUTOSCALING %}
+{%- if RUN_CMS and POD_AUTOSCALING_CMS_AUTOSCALING %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
