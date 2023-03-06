@@ -9,7 +9,7 @@ spec:
     kind:       Deployment
     name:       lms
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"
 {%- endif %}
 {%- if RUN_LMS and POD_AUTOSCALING_LMS_WORKER_VPA %}
 ---
@@ -23,7 +23,7 @@ spec:
     kind:       Deployment
     name:       lms-worker
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"
 {%- endif %}
 {%- if RUN_CMS and POD_AUTOSCALING_CMS_VPA %}
 ---
@@ -37,7 +37,7 @@ spec:
     kind:       Deployment
     name:       cms
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"
 {%- endif %}
 {%- if RUN_CMS and POD_AUTOSCALING_CMS_WORKER_VPA %}
 ---
@@ -51,6 +51,6 @@ spec:
     kind:       Deployment
     name:       cms-worker
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"
 {%- endif %}
 {{ patch("pod-autoscaling-vpa") }}

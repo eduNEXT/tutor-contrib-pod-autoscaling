@@ -78,10 +78,10 @@ config = {
         "LMS_WORKER_MIN_REPLICAS": 1,
 
         # Kubernetes VPA autoscaling settings
-        "LMS_VPA": True,
-        "LMS_WORKER_VPA": True,
-        "CMS_VPA": True,
-        "CMS_WORKER_VPA": True,
+        "LMS_VPA": False,
+        "LMS_WORKER_VPA": False,
+        "CMS_VPA": False,
+        "CMS_WORKER_VPA": False,
     },
     # Add here settings that don't have a reasonable default for all users. For
     # instance: passwords, secret keys, etc.
