@@ -1,4 +1,4 @@
-{%- if RUN_LMS and POD_AUTOSCALING_LMS_VPA %}
+{%- if POD_AUTOSCALING_LMS_VPA %}
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
@@ -11,7 +11,7 @@ spec:
   updatePolicy:
     updateMode: "Off"
 {%- endif %}
-{%- if RUN_LMS and POD_AUTOSCALING_LMS_WORKER_VPA %}
+{%- if POD_AUTOSCALING_LMS_WORKER_VPA %}
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
@@ -25,7 +25,7 @@ spec:
   updatePolicy:
     updateMode: "Off"
 {%- endif %}
-{%- if RUN_CMS and POD_AUTOSCALING_CMS_VPA %}
+{%- if POD_AUTOSCALING_CMS_VPA %}
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
@@ -39,7 +39,7 @@ spec:
   updatePolicy:
     updateMode: "Off"
 {%- endif %}
-{%- if RUN_CMS and POD_AUTOSCALING_CMS_WORKER_VPA %}
+{%- if POD_AUTOSCALING_CMS_WORKER_VPA %}
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler

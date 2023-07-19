@@ -1,4 +1,4 @@
-{%- if RUN_LMS and POD_AUTOSCALING_LMS_HPA %}
+{%- if POD_AUTOSCALING_LMS_HPA %}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -30,7 +30,7 @@ spec:
         averageValue: {{ POD_AUTOSCALING_LMS_AVG_MEMORY }}
   {%- endif %}
 {%- endif %}
-{%- if RUN_LMS and POD_AUTOSCALING_LMS_WORKER_HPA %}
+{%- if POD_AUTOSCALING_LMS_WORKER_HPA %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -63,7 +63,7 @@ spec:
         averageValue: {{ POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY }}
   {%- endif %}
 {%- endif %}
-{%- if RUN_CMS and POD_AUTOSCALING_CMS_HPA %}
+{%- if POD_AUTOSCALING_CMS_HPA %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -96,7 +96,7 @@ spec:
         averageValue: {{ POD_AUTOSCALING_CMS_AVG_MEMORY }}
   {%- endif %}
 {%- endif %}
-{%- if RUN_CMS and POD_AUTOSCALING_CMS_WORKER_HPA %}
+{%- if POD_AUTOSCALING_CMS_WORKER_HPA %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
