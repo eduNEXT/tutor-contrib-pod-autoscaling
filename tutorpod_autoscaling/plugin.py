@@ -11,7 +11,7 @@ from tutor import hooks
 from .__about__ import __version__
 
 ################# Autoscaling
-# Here comes the default common setttings for the autoscaling. Some resources
+# Here comes the default common settings for the autoscaling. Some resources
 # should not request a specific resources, but rather use as much/as few as
 # possible. This is the case for the CPU and memory in the case of workers.
 # Hence workers has no "*_MEMORY_REQUEST" but only "*_MEMORY_LIMIT" settings.
