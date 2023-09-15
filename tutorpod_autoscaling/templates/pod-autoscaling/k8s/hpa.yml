@@ -1,132 +1,37 @@
-{%- if POD_AUTOSCALING_LMS_HPA %}
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: lms-hpa
-  labels:
-    app.kubernetes.io/name: lms-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: lms
-  minReplicas: {{ POD_AUTOSCALING_LMS_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_LMS_MAX_REPLICAS }}
-  metrics:
-  {%- if POD_AUTOSCALING_LMS_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_LMS_AVG_CPU }}
-  {%- endif %}
-  {%- if POD_AUTOSCALING_LMS_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_LMS_AVG_MEMORY }}
-  {%- endif %}
-{%- endif %}
-{%- if POD_AUTOSCALING_LMS_WORKER_HPA %}
+{% for service_name, config in POD_AUTOSCALING_SERVICES.items() %}
+{%- if config.hpa.enabled %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: lms-worker-hpa
+  name: {{ service_name }}-hpa
   labels:
-    app.kubernetes.io/name: lms-worker-hpa
+    app.kubernetes.io/name: {{ service_name }}-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: lms-worker
-  minReplicas: {{ POD_AUTOSCALING_LMS_WORKER_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_LMS_WORKER_MAX_REPLICAS }}
+    name: {{ service_name }}
+  minReplicas: {{ config.hpa.min_replicas }}
+  maxReplicas: {{ config.hpa.max_replicas }}
   metrics:
-  {%- if POD_AUTOSCALING_LMS_WORKER_AVG_CPU > 0 %}
+  {%- if config.hpa.avg_cpu | float > 0 %}
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_LMS_WORKER_AVG_CPU }}
+        averageUtilization: {{ config.hpa.avg_cpu | float }}
   {%- endif %}
-  {%- if POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY|length %}
+  {%- if config.hpa.avg_memory|length %}
   - type: Resource
     resource:
       name: memory
       target:
         type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY }}
+        averageValue: {{ config.hpa.avg_memory }}
   {%- endif %}
 {%- endif %}
-{%- if POD_AUTOSCALING_CMS_HPA %}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: cms-hpa
-  labels:
-    app.kubernetes.io/name: cms-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: cms
-  minReplicas: {{ POD_AUTOSCALING_CMS_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_CMS_MAX_REPLICAS }}
-  metrics:
-  {%- if POD_AUTOSCALING_CMS_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_CMS_AVG_CPU }}
-  {%- endif %}
-  {%- if POD_AUTOSCALING_CMS_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_CMS_AVG_MEMORY }}
-  {%- endif %}
-{%- endif %}
-{%- if POD_AUTOSCALING_CMS_WORKER_HPA %}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: cms-worker-hpa
-  labels:
-    app.kubernetes.io/name: cms-worker-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: cms-worker
-  minReplicas: {{ POD_AUTOSCALING_CMS_WORKER_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_CMS_WORKER_MAX_REPLICAS }}
-  metrics:
-  {%- if POD_AUTOSCALING_CMS_WORKER_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_CMS_WORKER_AVG_CPU }}
-  {%- endif %}
-  {%- if POD_AUTOSCALING_CMS_WORKER_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_CMS_WORKER_AVG_MEMORY }}
-  {%- endif %}
-{%- endif %}
+{% endfor %}
+
 {{ patch("pod-autoscaling-hpa") }}

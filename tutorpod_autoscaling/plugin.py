@@ -82,6 +82,73 @@ config = {
         "LMS_WORKER_VPA": False,
         "CMS_VPA": False,
         "CMS_WORKER_VPA": False,
+        # Services to autoscale
+        "SERVICES": {
+            "lms": {
+                "hpa": {
+                    "enabled": "{{ POD_AUTOSCALING_LMS_HPA }}",
+                    "avg_cpu": "{{ POD_AUTOSCALING_LMS_AVG_CPU }}",
+                    "avg_memory": "{{ POD_AUTOSCALING_LMS_AVG_MEMORY }}",
+                    "cpu_limit": "{{ POD_AUTOSCALING_LMS_CPU_LIMIT }}",
+                    "cpu_request": "{{ POD_AUTOSCALING_LMS_CPU_REQUEST }}",
+                    "max_replicas": "{{ POD_AUTOSCALING_LMS_MAX_REPLICAS }}",
+                    "memory_limit": "{{ POD_AUTOSCALING_LMS_MEMORY_LIMIT }}",
+                    "memory_request": "{{ POD_AUTOSCALING_LMS_MEMORY_REQUEST }}",
+                    "min_replicas": "{{ POD_AUTOSCALING_LMS_MIN_REPLICAS }}",
+                },
+                "vpa": {
+                    "enabled": "{{ POD_AUTOSCALING_LMS_VPA }}",
+                },
+            },
+            "lms-worker": {
+                "hpa": {
+                    "enabled": "{{ POD_AUTOSCALING_LMS_WORKER_HPA }}",
+                    "avg_cpu": "{{ POD_AUTOSCALING_LMS_WORKER_AVG_CPU }}",
+                    "avg_memory": "{{ POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY }}",
+                    "cpu_limit": "{{ POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT }}",
+                    "cpu_request": "{{ POD_AUTOSCALING_LMS_WORKER_CPU_REQUEST }}",
+                    "max_replicas": "{{ POD_AUTOSCALING_LMS_WORKER_MAX_REPLICAS }}",
+                    "memory_limit": "{{ POD_AUTOSCALING_LMS_WORKER_MEMORY_LIMIT }}",
+                    "memory_request": "{{ POD_AUTOSCALING_LMS_WORKER_MEMORY_REQUEST }}",
+                    "min_replicas": "{{ POD_AUTOSCALING_LMS_WORKER_MIN_REPLICAS }}",
+                },
+                "vpa": {
+                    "enabled": "{{ POD_AUTOSCALING_LMS_WORKER_VPA }}",
+                },
+            },
+            "cms": {
+                "hpa": {
+                    "enabled": "{{ POD_AUTOSCALING_CMS_HPA }}",
+                    "avg_cpu": "{{ POD_AUTOSCALING_CMS_AVG_CPU }}",
+                    "avg_memory": "{{ POD_AUTOSCALING_CMS_AVG_MEMORY }}",
+                    "cpu_limit": "{{ POD_AUTOSCALING_CMS_CPU_LIMIT }}",
+                    "cpu_request": "{{ POD_AUTOSCALING_CMS_CPU_REQUEST }}",
+                    "max_replicas": "{{ POD_AUTOSCALING_CMS_MAX_REPLICAS }}",
+                    "memory_limit": "{{ POD_AUTOSCALING_CMS_MEMORY_LIMIT }}",
+                    "memory_request": "{{ POD_AUTOSCALING_CMS_MEMORY_REQUEST }}",
+                    "min_replicas": "{{ POD_AUTOSCALING_CMS_MIN_REPLICAS }}",
+                },
+                "vpa": {
+                    "enabled": "{{ POD_AUTOSCALING_CMS_VPA }}",
+                },
+            },
+            "cms-worker": {
+                "hpa": {
+                    "enabled": "{{ POD_AUTOSCALING_CMS_WORKER_HPA }}",
+                    "avg_cpu": "{{ POD_AUTOSCALING_CMS_WORKER_AVG_CPU }}",
+                    "avg_memory": "{{ POD_AUTOSCALING_CMS_WORKER_AVG_MEMORY }}",
+                    "cpu_limit": "{{ POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT }}",
+                    "cpu_request": "{{ POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST }}",
+                    "max_replicas": "{{ POD_AUTOSCALING_CMS_WORKER_MAX_REPLICAS }}",
+                    "memory_limit": "{{ POD_AUTOSCALING_CMS_WORKER_MEMORY_LIMIT }}",
+                    "memory_request": "{{ POD_AUTOSCALING_CMS_WORKER_MEMORY_REQUEST }}",
+                    "min_replicas": "{{ POD_AUTOSCALING_CMS_WORKER_MIN_REPLICAS }}",
+                },
+                "vpa": {
+                    "enabled": "{{ POD_AUTOSCALING_CMS_WORKER_VPA }}",
+                },
+            },
+        }
     },
     # Add here settings that don't have a reasonable default for all users. For
     # instance: passwords, secret keys, etc.
