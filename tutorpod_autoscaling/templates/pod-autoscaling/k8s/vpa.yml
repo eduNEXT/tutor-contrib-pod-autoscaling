@@ -1,4 +1,5 @@
 {%- if POD_AUTOSCALING_LMS_VPA %}
+---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:

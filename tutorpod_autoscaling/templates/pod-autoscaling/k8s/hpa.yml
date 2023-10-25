@@ -1,4 +1,5 @@
 {%- if POD_AUTOSCALING_LMS_HPA %}
+---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
