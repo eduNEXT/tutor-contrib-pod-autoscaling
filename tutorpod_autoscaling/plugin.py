@@ -5,11 +5,13 @@ import os.path
 from glob import glob
 
 import importlib_resources
-from tutor import hooks
+import tutor
+from tutor import hooks as tutor_hooks
 
-from typing import Dict, Union
+from typing import Dict, Union, Iterable
 
 from .__about__ import __version__
+from .hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
 
 ################# Autoscaling
 # Here comes the default common settings for the autoscaling. Some resources
@@ -30,75 +32,114 @@ LMS_WORKER_MEMORY_REQUEST_MB = 750
 config: Dict[str, Dict[str, Union[bool, str, float]]] = {
     "defaults": {
         "VERSION": __version__,
-        "CMS_MEMORY_REQUEST": f"{CMS_MEMORY_REQUEST_MB}Mi",
-        "LMS_MEMORY_REQUEST": f"{LMS_MEMORY_REQUEST_MB}Mi",
-        # Kubernetes HPA autoscaling settings
-        "CMS_HPA": True,
-        "CMS_AVG_CPU": 300,
-        "CMS_AVG_MEMORY": "",
-        "CMS_CPU_LIMIT": 1,
-        "CMS_CPU_REQUEST": 0.25,
-        "CMS_MAX_REPLICAS": CMS_MAX_REPLICAS,
-        "CMS_MEMORY_LIMIT": f"{CMS_MEMORY_REQUEST_MB * 4}Mi",
-        "CMS_MIN_REPLICAS": 1,
-        "CMS_WORKER_HPA": True,
-        "CMS_WORKER_AVG_CPU": 400,
-        "CMS_WORKER_AVG_MEMORY": "",  # Disable memory-based autoscaling
-        "CMS_WORKER_CPU_LIMIT": 1,
-        "CMS_WORKER_CPU_REQUEST": 0.175,
-        "CMS_WORKER_MAX_REPLICAS": CMS_MAX_REPLICAS * 1.5,
-        "CMS_WORKER_MEMORY_LIMIT": f"{CMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
-        "CMS_WORKER_MEMORY_REQUEST": f"{CMS_WORKER_MEMORY_REQUEST_MB}Mi",
-        "CMS_WORKER_MIN_REPLICAS": 1,
-        "LMS_HPA": True,
-        "LMS_AVG_CPU": 300,
-        "LMS_AVG_MEMORY": "",
-        "LMS_CPU_LIMIT": 1,
-        "LMS_CPU_REQUEST": 0.25,
-        "LMS_MAX_REPLICAS": LMS_MAX_REPLICAS,
-        "LMS_MEMORY_LIMIT": f"{LMS_MEMORY_REQUEST_MB * 4}Mi",
-        "LMS_MIN_REPLICAS": 1,
-        "LMS_WORKER_HPA": True,
-        "LMS_WORKER_AVG_CPU": 400,
-        "LMS_WORKER_AVG_MEMORY": "",  # Disable memory-based autoscaling
-        "LMS_WORKER_CPU_LIMIT": 1,
-        "LMS_WORKER_CPU_REQUEST": 0.175,
-        "LMS_WORKER_MAX_REPLICAS": LMS_MAX_REPLICAS * 1.5,
-        "LMS_WORKER_MEMORY_LIMIT": f"{LMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
-        "LMS_WORKER_MEMORY_REQUEST": f"{LMS_WORKER_MEMORY_REQUEST_MB}Mi",
-        "LMS_WORKER_MIN_REPLICAS": 1,
-        # Kubernetes VPA autoscaling settings
-        "LMS_VPA": False,
-        "LMS_WORKER_VPA": False,
-        "CMS_VPA": False,
-        "CMS_WORKER_VPA": False,
     },
     "unique": {},
     "overrides": {},
 }
 
+CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
+    "lms": {
+        "enable_hpa": True,
+        "memory_request": f"{LMS_MEMORY_REQUEST_MB}Mi",
+        "cpu_request": 0.25,
+        "memory_limit": f"{LMS_MEMORY_REQUEST_MB * 4}Mi",
+        "cpu_limit": 1,
+        "min_replicas": 1,
+        "max_replicas": LMS_MAX_REPLICAS,
+        "avg_cpu": 300,
+        "avg_memory": "",
+        "enable_vpa": False,
+    },
+    "lms-worker": {
+        "enable_hpa": True,
+        "memory_request": f"{LMS_WORKER_MEMORY_REQUEST_MB}Mi",
+        "cpu_request": 0.175,
+        "memory_limit": f"{LMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
+        "cpu_limit": 1,
+        "min_replicas": 1,
+        "max_replicas": LMS_MAX_REPLICAS * 1.5,
+        "avg_cpu": 400,
+        "avg_memory": "",
+        "enable_vpa": False,
+    },
+    "cms": {
+        "enable_hpa": True,
+        "memory_request": f"{CMS_MEMORY_REQUEST_MB}Mi",
+        "cpu_request": 0.25,
+        "memory_limit": f"{CMS_MEMORY_REQUEST_MB * 4}Mi",
+        "cpu_limit": 1,
+        "min_replicas": 1,
+        "max_replicas": CMS_MAX_REPLICAS,
+        "avg_cpu": 300,
+        "avg_memory": "",
+        "enable_vpa": False,
+    },
+    "cms-worker": {
+        "enable_hpa": True,
+        "memory_request": f"{CMS_WORKER_MEMORY_REQUEST_MB}Mi",
+        "cpu_request": 0.175,
+        "memory_limit": f"{CMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
+        "cpu_limit": 1,
+        "min_replicas": 1,
+        "max_replicas": CMS_MAX_REPLICAS * 1.5,
+        "avg_cpu": 400,
+        "avg_memory": "",
+        "enable_vpa": False,
+    },
+}
+
+
+# The core autoscaling configs are added with a high priority, such that other users can override or
+# remove them.
+@AUTOSCALING_CONFIG.add(priority=tutor_hooks.priorities.HIGH)
+def _add_core_autoscaling_config(
+    scaling_config: dict[str, AUTOSCALING_ATTRS_TYPE]
+) -> dict[str, AUTOSCALING_ATTRS_TYPE]:
+    scaling_config.update(CORE_AUTOSCALING_CONFIG)
+    return scaling_config
+
+
+@tutor.hooks.lru_cache
+def get_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
+    """
+    This function is cached for performance.
+    """
+    return AUTOSCALING_CONFIG.apply({})
+
+
+def iter_autoscaling_config(key) -> Iterable[tuple[str, AUTOSCALING_ATTRS_TYPE]]:
+    """
+    Yield:
+
+        (name, dict)
+    """
+    for name, config in get_autoscaling_config().items():
+        if config[key]:
+            yield name, config
+
+
 # Add configuration entries
-hooks.Filters.CONFIG_DEFAULTS.add_items(
+tutor_hooks.Filters.CONFIG_DEFAULTS.add_items(
     [
         (f"POD_AUTOSCALING_{key}", value)
         for key, value in config.get("defaults", {}).items()
     ]
 )
-hooks.Filters.CONFIG_UNIQUE.add_items(
+tutor_hooks.Filters.CONFIG_UNIQUE.add_items(
     [
         (f"POD_AUTOSCALING_{key}", value)
         for key, value in config.get("unique", {}).items()
     ]
 )
-hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
+tutor_hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
 
 
 # Add the "templates" folder as a template root
-hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
+tutor_hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
     str(importlib_resources.files("tutorpod_autoscaling") / "templates")
 )
 # Render the "build" and "apps" folders
-hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
+tutor_hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     [
         ("pod-autoscaling/build", "plugins"),
         ("pod-autoscaling/apps", "plugins"),
@@ -106,9 +147,18 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     ],
 )
 
+# Make the pod-autoscaling hook functions available within templates
+tutor_hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
+    [
+        ("iter_autoscaling_config", iter_autoscaling_config),
+    ]
+)
+
 # Load patches from files
 for path in glob(
     str(importlib_resources.files("tutorpod_autoscaling") / "patches" / "*")
 ):
     with open(path, encoding="utf-8") as patch_file:
-        hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))
+        tutor_hooks.Filters.ENV_PATCHES.add_item(
+            (os.path.basename(path), patch_file.read())
+        )

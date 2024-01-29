@@ -27,37 +27,44 @@ HPA
 
 This plugin allows to configure HPA's for the **LMS**, **CMS**, **LMS_WORKER** and **CMS_WORKER** deployments based on **CPU** and **MEMORY** metrics
 
-- ``POD_AUTOSCALING_LMS_HPA`` (default: ``true``): Enables/disables HPA for LMS deployment.
-- ``POD_AUTOSCALING_LMS_AVG_CPU`` (default: ``300``): defines the CPU consumption to keep in the HPA, expressed as a percentage.
-- ``POD_AUTOSCALING_LMS_AVG_MEMORY`` (default: ``""``): defines the memory consumption to keep in the HPA, expressed as a memory value (e.g. "750Mi"). **For now, we suggest keeping this value empty.**
-- ``POD_AUTOSCALING_LMS_CPU_LIMIT`` (default: ``1``): sets the maximum CPU consumption of a LMS pod.
-- ``POD_AUTOSCALING_LMS_CPU_REQUEST`` (default: ``0.25``): sets the minimum CPU reserved for a new LMS pod.
-- ``POD_AUTOSCALING_LMS_MAX_REPLICAS`` (default: ``4``): the HPA will scale up to this maximum number of replicas
-- ``POD_AUTOSCALING_LMS_MEMORY_LIMIT`` (default: ``"1400Mi"``): sets the maximum memory consumption of a LMS pod.
-- ``POD_AUTOSCALING_LMS_MEMORY_REQUEST`` (default: ``"350Mi"``): sets the minimum memory reserved for a new LMS pod.
-- ``POD_AUTOSCALING_LMS_MIN_REPLICAS`` (default: ``1``): The HPA will not scale below this minimum number of replicas.
-
-- ``POD_AUTOSCALING_LMS_WORKER_HPA`` (default: ``true``)
-- ``POD_AUTOSCALING_LMS_WORKER_AVG_CPU`` (default: ``400``)
-- ``POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY`` (default: ``""``)
-- ``POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT`` (default: ``1``)
-- ``POD_AUTOSCALING_LMS_WORKER_CPU_REQUEST`` (default: ``0.175``)
-- ``POD_AUTOSCALING_LMS_WORKER_MAX_REPLICAS`` (default: ``6``)
-- ``POD_AUTOSCALING_LMS_WORKER_MEMORY_LIMIT`` (default: ``"3000Mi"``)
-- ``POD_AUTOSCALING_LMS_WORKER_MEMORY_REQUEST`` (default: ``"750Mi"``)
-- ``POD_AUTOSCALING_LMS_WORKER_MIN_REPLICAS`` (default: ``1``)
-
-To configure CMS variables, just change "LMS" in the variables above by "CMS" (CMS variables have the same defaults).
-
 VPA
 ^^^
 
 VPA components can be enabled/disabled for the **LMS**, **CMS**, **LMS_WORKER** and **CMS_WORKER** deployments. The VPA's are configured with the **UpdateMode** mode disabled, so they don't modify Pod resources automatically. Instead, they work as a dry-run, setting the recommended resources for the deployments in every VPA object.
 
-- ``POD_AUTOSCALING_LMS_VPA`` (default: ``false``)
-- ``POD_AUTOSCALING_LMS_WORKER_VPA`` (default: ``false``)
-- ``POD_AUTOSCALING_CMS_VPA`` (default: ``false``)
-- ``POD_AUTOSCALING_CMS_WORKER_VPA`` (default: ``false``)
+HPA - VPA Management
+^^^^^^^^^^^^^^^^^^^^
+
+Other plugin developers can take advantage of this plugin to configure they HPA/HPA settings. To declare a new HPA, create a Tutor plugin
+and add your autoscaling configuration to the ``tutorpod_autoscaling.hooks.AUTOSCALING_CONFIG`` filter. For example::
+
+    from tutorpod_autoscaling import AUTOSCALING_CONFIG
+
+    @AUTOSCALING_CONFIG.add()
+    def _add_my_autoscaling(autoscaling_config):
+        autoscaling_config["service"] = {
+            "enable_hpa": True,
+            "memory_request": "300Mi",
+            "cpu_request": 0.25,
+            "memory_limit": "1200Mi",
+            "cpu_limit": 1,
+            "min_replicas": 1,
+            "max_replicas": 10,
+            "avg_cpu": 300,
+            "avg_memory": "",
+            "enable_vpa": True,
+        }
+        return autoscaling_config
+
+The following services are pre-configured in the plugin:
+
+- lms
+- cms
+- lms-worker
+- cms-worker
+
+You can update the configuration for any of these services by updating the autoscaling_config dictionary in the filter function.
+
 
 **Notes** to take in mind when using this plugin:
 
