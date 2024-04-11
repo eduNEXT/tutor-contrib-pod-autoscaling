@@ -4,8 +4,7 @@ import os
 import os.path
 from glob import glob
 
-import click
-import pkg_resources
+import importlib_resources
 from tutor import hooks
 
 from .__about__ import __version__
@@ -88,7 +87,7 @@ hooks.Filters.CONFIG_OVERRIDES.add_items(list(config["overrides"].items()))
 
 # Add the "templates" folder as a template root
 hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    pkg_resources.resource_filename("tutorpod_autoscaling", "templates"),
+    str(importlib_resources.files("tutorpod_autoscaling") / "templates")
 )
 # Render the "build" and "apps" folders
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
@@ -100,11 +99,6 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
 )
 
 # Load patches from files
-for path in glob(
-    os.path.join(
-        pkg_resources.resource_filename("tutorpod_autoscaling", "patches"),
-        "*",
-    )
-):
+for path in glob(str(importlib_resources.files("tutorpod_autoscaling") / "patches" / "*")):
     with open(path, encoding="utf-8") as patch_file:
         hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))
