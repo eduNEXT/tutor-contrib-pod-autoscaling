@@ -77,12 +77,14 @@ config = {
 
 # Add configuration entries
 hooks.Filters.CONFIG_DEFAULTS.add_items(
-    [(f"POD_AUTOSCALING_{key}", value) for key, value in config["defaults"].items()]
+    [(f"POD_AUTOSCALING_{key}", value) for key, value in config.get("defaults", {}).items()]
 )
 hooks.Filters.CONFIG_UNIQUE.add_items(
-    [(f"POD_AUTOSCALING_{key}", value) for key, value in config["unique"].items()]
+    [(f"POD_AUTOSCALING_{key}", value) for key, value in config.get("unique", {}).items()]
 )
-hooks.Filters.CONFIG_OVERRIDES.add_items(list(config["overrides"].items()))
+hooks.Filters.CONFIG_OVERRIDES.add_items(
+    list(config.get("overrides", {}).items())
+)
 
 
 # Add the "templates" folder as a template root
