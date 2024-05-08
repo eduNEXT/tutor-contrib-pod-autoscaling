@@ -57,7 +57,7 @@ CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
         "memory_limit": f"{LMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
         "cpu_limit": 1,
         "min_replicas": 1,
-        "max_replicas": LMS_MAX_REPLICAS * 1.5,
+        "max_replicas": int(LMS_MAX_REPLICAS * 1.5),
         "avg_cpu": 400,
         "avg_memory": "",
         "enable_vpa": False,
@@ -81,7 +81,7 @@ CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
         "memory_limit": f"{CMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
         "cpu_limit": 1,
         "min_replicas": 1,
-        "max_replicas": CMS_MAX_REPLICAS * 1.5,
+        "max_replicas": int(CMS_MAX_REPLICAS * 1.5),
         "avg_cpu": 400,
         "avg_memory": "",
         "enable_vpa": False,
@@ -107,7 +107,7 @@ def get_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
     return AUTOSCALING_CONFIG.apply({})
 
 
-def iter_autoscaling_config(key) -> Iterable[tuple[str, AUTOSCALING_ATTRS_TYPE]]:
+def iter_autoscaling_config(key: str) -> Iterable[tuple[str, AUTOSCALING_ATTRS_TYPE]]:
     """
     Yield:
 
@@ -131,7 +131,9 @@ tutor_hooks.Filters.CONFIG_UNIQUE.add_items(
         for key, value in config.get("unique", {}).items()
     ]
 )
-tutor_hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
+tutor_hooks.Filters.CONFIG_OVERRIDES.add_items(
+    list(config.get("overrides", {}).items())
+)
 
 
 # Add the "templates" folder as a template root
