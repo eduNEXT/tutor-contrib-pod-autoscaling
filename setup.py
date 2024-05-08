@@ -40,6 +40,11 @@ setup(
     include_package_data=True,
     python_requires=">=3.8",
     install_requires=["tutor>=17.0.0,<18.0.0"],
+    extras_require={
+        "dev": [
+            "tutor[dev]>=17.0.0,<18.0.0",
+        ]
+    },
     entry_points={
         "tutor.plugin.v1": [
             "pod-autoscaling = tutorpod_autoscaling.plugin"

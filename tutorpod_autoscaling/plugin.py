@@ -4,9 +4,10 @@ import os
 import os.path
 from glob import glob
 
-import click
-import pkg_resources
+import importlib_resources
 from tutor import hooks
+
+from typing import Dict, Union
 
 from .__about__ import __version__
 
@@ -26,7 +27,7 @@ LMS_MEMORY_REQUEST_MB = 350
 LMS_MAX_REPLICAS = 4
 LMS_WORKER_MEMORY_REQUEST_MB = 750
 
-config = {
+config: Dict[str, Dict[str, Union[bool, str, float]]] = {
     "defaults": {
         "VERSION": __version__,
         "CMS_MEMORY_REQUEST": f"{CMS_MEMORY_REQUEST_MB}Mi",
@@ -78,17 +79,23 @@ config = {
 
 # Add configuration entries
 hooks.Filters.CONFIG_DEFAULTS.add_items(
-    [(f"POD_AUTOSCALING_{key}", value) for key, value in config["defaults"].items()]
+    [
+        (f"POD_AUTOSCALING_{key}", value)
+        for key, value in config.get("defaults", {}).items()
+    ]
 )
 hooks.Filters.CONFIG_UNIQUE.add_items(
-    [(f"POD_AUTOSCALING_{key}", value) for key, value in config["unique"].items()]
+    [
+        (f"POD_AUTOSCALING_{key}", value)
+        for key, value in config.get("unique", {}).items()
+    ]
 )
-hooks.Filters.CONFIG_OVERRIDES.add_items(list(config["overrides"].items()))
+hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
 
 
 # Add the "templates" folder as a template root
 hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    pkg_resources.resource_filename("tutorpod_autoscaling", "templates"),
+    str(importlib_resources.files("tutorpod_autoscaling") / "templates")
 )
 # Render the "build" and "apps" folders
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
@@ -101,10 +108,7 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
 
 # Load patches from files
 for path in glob(
-    os.path.join(
-        pkg_resources.resource_filename("tutorpod_autoscaling", "patches"),
-        "*",
-    )
+    str(importlib_resources.files("tutorpod_autoscaling") / "patches" / "*")
 ):
     with open(path, encoding="utf-8") as patch_file:
         hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))
