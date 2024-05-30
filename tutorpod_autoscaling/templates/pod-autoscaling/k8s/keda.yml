@@ -1,0 +1,23 @@
+{% for worker, autoscaling in POD_AUTOSCALING_KEDA_CONFIG.items() %}
+---
+apiVersion: keda.sh/v1alpha1
+kind: Keda
+metadata:
+  name: {{ worker }}-scaledobject
+spec:
+  minReplicaCount: {{ autoscaling["min_replicas"] }}
+  maxReplicaCount: {{ autoscaling["max_replicas"] }}
+  scaleTargetRef:
+    kind: Deployment
+    name: {{ worker }}
+  triggers:
+  - metadata:
+      {% if REDIS_HOST == 'redis'%}
+      address: redis.{{K8S_NAMESPACE}}:{{REDIS_PORT}}
+      {% else %}
+      address: {{REDIS_HOST}}:{{REDIS_PORT}}
+      {% endif %}
+      listLength: {{ autoscaling["list_length"]}}
+      listName: {{ autoscaling["queue_name"]}}
+    type: redis
+{% endfor %}

@@ -32,7 +32,24 @@ LMS_WORKER_MEMORY_REQUEST_MB = 750
 config: Dict[
     str, Dict[str, Union[bool, str, float, dict[str, AUTOSCALING_ATTRS_TYPE]]]
 ] = {
-    "defaults": {"VERSION": __version__, "EXTRA_SERVICES": {}},
+    "defaults": {
+        "VERSION": __version__,
+        "EXTRA_SERVICES": {},
+        "KEDA_CONFIG": {
+            "lms-worker": {
+                "min_replicas": 1,
+                "max_replicas": 10,
+                "list_length": 40,
+                "queue_name": "edx.lms.core.default",
+            },
+            "cms-worker": {
+                "min_replicas": 1,
+                "max_replicas": 10,
+                "list_length": 40,
+                "queue_name": "edx.cms.core.default",
+            },
+        },
+    },
     "unique": {},
     "overrides": {},
 }
