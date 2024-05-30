@@ -8,7 +8,7 @@ import importlib_resources
 import tutor
 from tutor import hooks as tutor_hooks
 
-from typing import Dict, Union, Iterable
+from typing import Dict, Union
 
 from .__about__ import __version__
 from .hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
@@ -29,10 +29,10 @@ LMS_MEMORY_REQUEST_MB = 350
 LMS_MAX_REPLICAS = 4
 LMS_WORKER_MEMORY_REQUEST_MB = 750
 
-config: Dict[str, Dict[str, Union[bool, str, float]]] = {
-    "defaults": {
-        "VERSION": __version__,
-    },
+config: Dict[
+    str, Dict[str, Union[bool, str, float, dict[str, AUTOSCALING_ATTRS_TYPE]]]
+] = {
+    "defaults": {"VERSION": __version__, "EXTRA_SERVICES": {}},
     "unique": {},
     "overrides": {},
 }
@@ -107,15 +107,13 @@ def get_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
     return AUTOSCALING_CONFIG.apply({})
 
 
-def iter_autoscaling_config(key: str) -> Iterable[tuple[str, AUTOSCALING_ATTRS_TYPE]]:
+def iter_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
     """
     Yield:
 
         (name, dict)
     """
-    for name, config in get_autoscaling_config().items():
-        if config[key]:
-            yield name, config
+    return {name: config for name, config in get_autoscaling_config().items()}
 
 
 # Add configuration entries

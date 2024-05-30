@@ -1,4 +1,5 @@
-{% for service, autoscaling in iter_autoscaling_config("enable_hpa") %}
+{% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
+{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_hpa") %}
 ---
 apiVersion: apps/v1
 kind: Deployment
