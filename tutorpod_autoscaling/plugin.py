@@ -9,6 +9,7 @@ import tutor
 from tutor import hooks as tutor_hooks
 
 from typing import Dict, Union
+import yaml
 
 from .__about__ import __version__
 from .hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
@@ -32,7 +33,24 @@ LMS_WORKER_MEMORY_REQUEST_MB = 750
 config: Dict[
     str, Dict[str, Union[bool, str, float, dict[str, AUTOSCALING_ATTRS_TYPE]]]
 ] = {
-    "defaults": {"VERSION": __version__, "EXTRA_SERVICES": {}},
+    "defaults": {
+        "VERSION": __version__,
+        "EXTRA_SERVICES": {},
+        "KEDA_CONFIG": {
+            "lms-worker": {
+                "min_replicas": 1,
+                "max_replicas": 10,
+                "list_length": 40,
+                "queue_name": "edx.lms.core.default",
+            },
+            "cms-worker": {
+                "min_replicas": 1,
+                "max_replicas": 10,
+                "list_length": 40,
+                "queue_name": "edx.cms.core.default",
+            },
+        },
+    },
     "unique": {},
     "overrides": {},
 }
@@ -116,6 +134,10 @@ def iter_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
     return {name: config for name, config in get_autoscaling_config().items()}
 
 
+def to_yaml_filter(value):
+    return yaml.dump(value, default_flow_style=False)
+
+
 # Add configuration entries
 tutor_hooks.Filters.CONFIG_DEFAULTS.add_items(
     [
@@ -151,8 +173,11 @@ tutor_hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
 tutor_hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
     [
         ("iter_autoscaling_config", iter_autoscaling_config),
+        ("to_yaml", to_yaml_filter),
     ]
 )
+
+tutor_hooks.Filters.ENV_TEMPLATE_FILTERS.add_items([("to_yaml", to_yaml_filter)])
 
 # Load patches from files
 for path in glob(

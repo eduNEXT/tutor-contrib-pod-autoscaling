@@ -1,2 +1,3 @@
 - plugins/pod-autoscaling/k8s/hpa.yml
 - plugins/pod-autoscaling/k8s/vpa.yml
+- plugins/pod-autoscaling/k8s/keda.yml
