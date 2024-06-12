@@ -62,7 +62,7 @@ You can also override the HPA/VPA configuration for any of the services supporte
 
     @AUTOSCALING_CONFIG.add()
     def _add_my_autoscaling(autoscaling_config):
-        autoscaling_config["LMS"] = {
+        autoscaling_config["lms"] = {
             "enable_hpa": True,
             "memory_request": "1Gi",
             "cpu_request": 0.4,
@@ -136,7 +136,7 @@ The equivalent configuration for the 18.x.x version using the **AUTOSCALING_CONF
 
     @AUTOSCALING_CONFIG.add()
     def _add_my_autoscaling(autoscaling_config):
-        autoscaling_config["LMS"] = {
+        autoscaling_config["lms"] = {
             "enable_hpa": True,
             "memory_request": "350Mi",
             "cpu_request": 0.25,
