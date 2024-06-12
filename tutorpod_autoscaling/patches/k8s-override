@@ -13,9 +13,9 @@ spec:
           resources:
             requests:
               memory: {{ autoscaling["memory_request"] }}
-            {%- if autoscaling["cpu_request"] > 0 %}
+              {%- if autoscaling["cpu_request"] > 0 %}
               cpu: {{ autoscaling["cpu_request"] }}
-            {%- endif %}
+              {%- endif %}
             limits:
               memory: {{ autoscaling["memory_limit"] }}
               {%- if autoscaling["cpu_limit"] > 0 %}
