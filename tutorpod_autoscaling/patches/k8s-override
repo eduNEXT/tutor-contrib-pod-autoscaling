@@ -57,14 +57,14 @@ spec:
         - name: cms
           resources:
             requests:
-              memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_REQUEST }}
-            {%- if POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST > 0 %}
-              cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_REQUEST }}
+              memory: {{ POD_AUTOSCALING_CMS_MEMORY_REQUEST }}
+            {%- if POD_AUTOSCALING_CMS_CPU_REQUEST > 0 %}
+              cpu: {{ POD_AUTOSCALING_CMS_CPU_REQUEST }}
             {%- endif %}
             limits:
-              memory: {{ POD_AUTOSCALING_CMS_WORKER_MEMORY_LIMIT }}
-              {%- if POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT > 0 %}
-              cpu: {{ POD_AUTOSCALING_CMS_WORKER_CPU_LIMIT }}
+              memory: {{ POD_AUTOSCALING_CMS_MEMORY_LIMIT }}
+              {%- if POD_AUTOSCALING_CMS_CPU_LIMIT > 0 %}
+              cpu: {{ POD_AUTOSCALING_CMS_CPU_LIMIT }}
               {%- endif %}
 {%- endif %}
 {%- if POD_AUTOSCALING_CMS_WORKER_HPA %}
