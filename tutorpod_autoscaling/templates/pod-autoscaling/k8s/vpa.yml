@@ -1,57 +1,15 @@
-{%- if POD_AUTOSCALING_LMS_VPA %}
+{% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
+{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_vpa") %}
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: vpa-recommender-lms
+  name: vpa-recommender-{{service}}
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       Deployment
-    name:       lms
+    name:       {{service}}
   updatePolicy:
     updateMode: "Off"
-{%- endif %}
-{%- if POD_AUTOSCALING_LMS_WORKER_VPA %}
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: vpa-recommender-lms-worker
-spec:
-  targetRef:
-    apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       lms-worker
-  updatePolicy:
-    updateMode: "Off"
-{%- endif %}
-{%- if POD_AUTOSCALING_CMS_VPA %}
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: vpa-recommender-cms
-spec:
-  targetRef:
-    apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       cms
-  updatePolicy:
-    updateMode: "Off"
-{%- endif %}
-{%- if POD_AUTOSCALING_CMS_WORKER_VPA %}
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: vpa-recommender-cms-worker
-spec:
-  targetRef:
-    apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       cms-worker
-  updatePolicy:
-    updateMode: "Off"
-{%- endif %}
-{{ patch("pod-autoscaling-vpa") }}
+{% endfor %}

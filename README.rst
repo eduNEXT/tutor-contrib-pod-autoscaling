@@ -22,42 +22,137 @@ Installation
 Configuration
 -------------
 
-HPA
-^^^
+This plugin implements a `filter <https://docs.tutor.edly.io/reference/api/hooks/filters.html>`_ called **AUTOSCALING_CONFIG** (``tutorpod_autoscaling.hooks.AUTOSCALING_CONFIG``) which allow to add/modify pod autoscaling configuration for different OpenedX services. The plugin by itself uses the **AUTOSCALING_CONFIG** filter to add default autoscaling configuration (HPA and VPA) for the **LMS**, **CMS**, **LMS_WORKER** and **CMS_WORKER** deployments based on **CPU** and **MEMORY** metrics (check the ``CORE_AUTOSCALING_CONFIG`` variable in the ``plugin.py`` file).
 
-This plugin allows to configure HPA's for the **LMS**, **CMS**, **LMS_WORKER** and **CMS_WORKER** deployments based on **CPU** and **MEMORY** metrics
+Adding/changing HPA/VPA configuration for OpenedX services
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- ``POD_AUTOSCALING_LMS_HPA`` (default: ``true``): Enables/disables HPA for LMS deployment.
-- ``POD_AUTOSCALING_LMS_AVG_CPU`` (default: ``300``): defines the CPU consumption to keep in the HPA, expressed as a percentage.
-- ``POD_AUTOSCALING_LMS_AVG_MEMORY`` (default: ``""``): defines the memory consumption to keep in the HPA, expressed as a memory value (e.g. "750Mi"). **For now, we suggest keeping this value empty.**
-- ``POD_AUTOSCALING_LMS_CPU_LIMIT`` (default: ``1``): sets the maximum CPU consumption of a LMS pod.
-- ``POD_AUTOSCALING_LMS_CPU_REQUEST`` (default: ``0.25``): sets the minimum CPU reserved for a new LMS pod.
-- ``POD_AUTOSCALING_LMS_MAX_REPLICAS`` (default: ``4``): the HPA will scale up to this maximum number of replicas
-- ``POD_AUTOSCALING_LMS_MEMORY_LIMIT`` (default: ``"1400Mi"``): sets the maximum memory consumption of a LMS pod.
-- ``POD_AUTOSCALING_LMS_MEMORY_REQUEST`` (default: ``"350Mi"``): sets the minimum memory reserved for a new LMS pod.
-- ``POD_AUTOSCALING_LMS_MIN_REPLICAS`` (default: ``1``): The HPA will not scale below this minimum number of replicas.
+Operators can take advantage of this plugin to configure their HPA/VPA settings for different services. There are 2 mechanisms to do so:
 
-- ``POD_AUTOSCALING_LMS_WORKER_HPA`` (default: ``true``)
-- ``POD_AUTOSCALING_LMS_WORKER_AVG_CPU`` (default: ``400``)
-- ``POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY`` (default: ``""``)
-- ``POD_AUTOSCALING_LMS_WORKER_CPU_LIMIT`` (default: ``1``)
-- ``POD_AUTOSCALING_LMS_WORKER_CPU_REQUEST`` (default: ``0.175``)
-- ``POD_AUTOSCALING_LMS_WORKER_MAX_REPLICAS`` (default: ``6``)
-- ``POD_AUTOSCALING_LMS_WORKER_MEMORY_LIMIT`` (default: ``"3000Mi"``)
-- ``POD_AUTOSCALING_LMS_WORKER_MEMORY_REQUEST`` (default: ``"750Mi"``)
-- ``POD_AUTOSCALING_LMS_WORKER_MIN_REPLICAS`` (default: ``1``)
+1. Create a Tutor plugin and add your HPA/VPA configuration to the ``tutorpod_autoscaling.hooks.AUTOSCALING_CONFIG`` filter. For instance, to add HPA support to the forum deployment:
 
-To configure CMS variables, just change "LMS" in the variables above by "CMS" (CMS variables have the same defaults).
+.. code-block:: python
 
-VPA
-^^^
+    from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
 
-VPA components can be enabled/disabled for the **LMS**, **CMS**, **LMS_WORKER** and **CMS_WORKER** deployments. The VPA's are configured with the **UpdateMode** mode disabled, so they don't modify Pod resources automatically. Instead, they work as a dry-run, setting the recommended resources for the deployments in every VPA object.
+    @AUTOSCALING_CONFIG.add()
+    def _add_my_autoscaling(autoscaling_config):
+        autoscaling_config["forum"] = {
+            "enable_hpa": True,
+            "memory_request": "300Mi",
+            "cpu_request": 0.25,
+            "memory_limit": "1200Mi",
+            "cpu_limit": 1,
+            "min_replicas": 1,
+            "max_replicas": 10,
+            "avg_cpu": 300,
+            "avg_memory": "",
+            "enable_vpa": False,
+        }
+        return autoscaling_config
 
-- ``POD_AUTOSCALING_LMS_VPA`` (default: ``false``)
-- ``POD_AUTOSCALING_LMS_WORKER_VPA`` (default: ``false``)
-- ``POD_AUTOSCALING_CMS_VPA`` (default: ``false``)
-- ``POD_AUTOSCALING_CMS_WORKER_VPA`` (default: ``false``)
+.. note::
+    - The key used for the new autoscaling item (in this case "forum") must match the name of the deployment you are adding HPA/VPA support to.
+
+You can also override the HPA/VPA configuration for any of the services supported by default, for instance, LMS:
+
+.. code-block:: python
+
+    from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
+
+    @AUTOSCALING_CONFIG.add()
+    def _add_my_autoscaling(autoscaling_config):
+        autoscaling_config["lms"] = {
+            "enable_hpa": True,
+            "memory_request": "1Gi",
+            "cpu_request": 0.4,
+            "memory_limit": "2Gi",
+            "cpu_limit": 1,
+            "min_replicas": 5,
+            "max_replicas": 20,
+            "avg_cpu": 70,
+            "avg_memory": "",
+            "enable_vpa": False,
+        }
+        return autoscaling_config
+
+2. Set the ``POD_AUTOSCALING_EXTRA_SERVICES`` variable to extend HPA/VPA support to different services of modify default ones:
+
+.. code-block:: yaml
+
+    POD_AUTOSCALING_EXTRA_SERVICES:
+        forum:
+            enable_hpa: true
+            memory_request: 300Mi
+            cpu_request: 0.25
+            memory_limit: 1200Mi
+            cpu_limit: 1
+            min_replicas: 1
+            max_replicas: 10
+            avg_cpu: 300
+            avg_memory: ''
+            enable_vpa: true
+        lms:
+            enable_hpa: true
+            memory_request: 1Gi
+            cpu_request: 0.4
+            memory_limit: 2Gi
+            cpu_limit: 1
+            min_replicas: 5
+            max_replicas: 20
+            avg_cpu: 70
+            avg_memory: ''
+            enable_vpa: true
+
+.. note::
+    - The main reason why 2 alternatives were provided to alter the HPA/VPA configuration is to enable operators to decide what alternative better suits their needs. In some cases, reducing the plugin dependency chain is desirable, thus using the plugin setting is a good alternative.
+    - The configuration defined through the **POD_AUTOSCALING_EXTRA_SERVICES** plugin setting will have precedence over the **AUTOSCALING_CONFIG** filter final configuration.
+    - Using only one of the 2 mechanisms available is strongly recommended to prevent potential misconfiguration.
+    - VPA components can be enabled/disabled for different deployments thanks to the ``enable_vpa`` key defined on every configured service. The VPAs are configured with the **UpdateMode** mode disabled, so they don't modify Pod resources automatically. Instead, they work as a dry-run, setting the recommended resources for the deployments in every VPA object.
+
+Migrating to Redwood version (18.x.x)
+-------------------------------------
+
+In versions prior to Redwood, the plugin used multiple configurations and a couple of patches to provide HPA/VPA support. Let's suppose you want to migrate to version 18.x.x and you have the following configuration in your ``config.yml`` for the LMS HPA/VPA support:
+
+.. code-block:: yaml
+
+    POD_AUTOSCALING_LMS_HPA: true
+    POD_AUTOSCALING_LMS_MEMORY_REQUEST: "350Mi"
+    POD_AUTOSCALING_LMS_CPU_REQUEST: 0.25
+    POD_AUTOSCALING_LMS_MEMORY_LIMIT: "1400Mi"
+    POD_AUTOSCALING_LMS_CPU_LIMIT: 1
+    POD_AUTOSCALING_LMS_MIN_REPLICAS: 1
+    POD_AUTOSCALING_LMS_MAX_REPLICAS: 4
+    POD_AUTOSCALING_LMS_AVG_CPU: 300
+    POD_AUTOSCALING_LMS_AVG_MEMORY: ""
+    POD_AUTOSCALING_LMS_VPA: false
+
+The equivalent configuration for the 18.x.x version using the **AUTOSCALING_CONFIG** filter would be like this:
+
+.. code-block:: python
+
+    from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
+
+    @AUTOSCALING_CONFIG.add()
+    def _add_my_autoscaling(autoscaling_config):
+        autoscaling_config["lms"] = {
+            "enable_hpa": True,
+            "memory_request": "350Mi",
+            "cpu_request": 0.25,
+            "memory_limit": "1400Mi",
+            "cpu_limit": 1,
+            "min_replicas": 1,
+            "max_replicas": 4,
+            "avg_cpu": 300,
+            "avg_memory": "",
+            "enable_vpa": False,
+        }
+        return autoscaling_config
+
+The migration of other services follows the same logic.
+
+It is important to mention that ``pod-autoscaling-hpa`` and ``pod-autoscaling-vpa`` patches were removed in the Redwood release since they are longer required in the HPA/VPA configuration model.
 
 **Notes** to take in mind when using this plugin:
 

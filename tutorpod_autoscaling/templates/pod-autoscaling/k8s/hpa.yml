@@ -1,133 +1,34 @@
-{%- if POD_AUTOSCALING_LMS_HPA %}
+{% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
+{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_hpa") %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: lms-hpa
+  name: {{service}}-hpa
   labels:
-    app.kubernetes.io/name: lms-hpa
+    app.kubernetes.io/name: {{service}}-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: lms
-  minReplicas: {{ POD_AUTOSCALING_LMS_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_LMS_MAX_REPLICAS }}
+    name: {{service}}
+  minReplicas: {{ autoscaling["min_replicas"] }}
+  maxReplicas: {{ autoscaling["max_replicas"] }}
   metrics:
-  {%- if POD_AUTOSCALING_LMS_AVG_CPU > 0 %}
+  {%- if autoscaling["avg_cpu"] > 0 %}
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_LMS_AVG_CPU }}
+        averageUtilization: {{ autoscaling["avg_cpu"] }}
   {%- endif %}
-  {%- if POD_AUTOSCALING_LMS_AVG_MEMORY|length %}
+  {%- if autoscaling["avg_memory"]|length %}
   - type: Resource
     resource:
       name: memory
       target:
         type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_LMS_AVG_MEMORY }}
+        averageValue: {{ autoscaling["avg_memory"] }}
   {%- endif %}
-{%- endif %}
-{%- if POD_AUTOSCALING_LMS_WORKER_HPA %}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: lms-worker-hpa
-  labels:
-    app.kubernetes.io/name: lms-worker-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: lms-worker
-  minReplicas: {{ POD_AUTOSCALING_LMS_WORKER_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_LMS_WORKER_MAX_REPLICAS }}
-  metrics:
-  {%- if POD_AUTOSCALING_LMS_WORKER_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_LMS_WORKER_AVG_CPU }}
-  {%- endif %}
-  {%- if POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_LMS_WORKER_AVG_MEMORY }}
-  {%- endif %}
-{%- endif %}
-{%- if POD_AUTOSCALING_CMS_HPA %}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: cms-hpa
-  labels:
-    app.kubernetes.io/name: cms-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: cms
-  minReplicas: {{ POD_AUTOSCALING_CMS_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_CMS_MAX_REPLICAS }}
-  metrics:
-  {%- if POD_AUTOSCALING_CMS_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_CMS_AVG_CPU }}
-  {%- endif %}
-  {%- if POD_AUTOSCALING_CMS_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_CMS_AVG_MEMORY }}
-  {%- endif %}
-{%- endif %}
-{%- if POD_AUTOSCALING_CMS_WORKER_HPA %}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: cms-worker-hpa
-  labels:
-    app.kubernetes.io/name: cms-worker-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: cms-worker
-  minReplicas: {{ POD_AUTOSCALING_CMS_WORKER_MIN_REPLICAS }}
-  maxReplicas: {{ POD_AUTOSCALING_CMS_WORKER_MAX_REPLICAS }}
-  metrics:
-  {%- if POD_AUTOSCALING_CMS_WORKER_AVG_CPU > 0 %}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ POD_AUTOSCALING_CMS_WORKER_AVG_CPU }}
-  {%- endif %}
-  {%- if POD_AUTOSCALING_CMS_WORKER_AVG_MEMORY|length %}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ POD_AUTOSCALING_CMS_WORKER_AVG_MEMORY }}
-  {%- endif %}
-{%- endif %}
-{{ patch("pod-autoscaling-hpa") }}
+{% endfor %}
