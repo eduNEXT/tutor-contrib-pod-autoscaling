@@ -69,4 +69,8 @@ exclude_commit_patterns = [
   "style:",
   "chore:",
   "test:",
+  "revert:",
+  "perf:",
+  "refactor:",
+  "ci:",
 ]
