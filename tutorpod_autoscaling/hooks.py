@@ -6,7 +6,7 @@ them.
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import TypedDict, NotRequired
 
 from tutor.core.hooks import Filter
 
@@ -22,6 +22,9 @@ class AUTOSCALING_ATTRS_TYPE(TypedDict):
     avg_cpu: int
     avg_memory: str
     enable_vpa: bool
+    list_length: NotRequired[int]
+    queue_name: NotRequired[str]
+    enable_keda: NotRequired[bool]
 
 
 AUTOSCALING_CONFIG: Filter[dict[str, AUTOSCALING_ATTRS_TYPE], []] = Filter()
