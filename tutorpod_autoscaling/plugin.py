@@ -8,8 +8,6 @@ import importlib_resources
 import tutor
 from tutor import hooks as tutor_hooks
 
-from typing import Dict, Union
-
 from .__about__ import __version__
 from .hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
 
@@ -29,9 +27,7 @@ LMS_MEMORY_REQUEST_MB = 350
 LMS_MAX_REPLICAS = 4
 LMS_WORKER_MEMORY_REQUEST_MB = 750
 
-config: Dict[
-    str, Dict[str, Union[bool, str, float, dict[str, AUTOSCALING_ATTRS_TYPE]]]
-] = {
+config = {
     "defaults": {
         "VERSION": __version__,
         "EXTRA_SERVICES": {},
@@ -54,7 +50,7 @@ config: Dict[
     "overrides": {},
 }
 
-CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
+CORE_AUTOSCALING_CONFIG = {
     "lms": {
         "enable_hpa": True,
         "memory_request": f"{LMS_MEMORY_REQUEST_MB}Mi",
