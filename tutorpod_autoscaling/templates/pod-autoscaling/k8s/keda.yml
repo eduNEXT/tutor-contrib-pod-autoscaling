@@ -1,7 +1,7 @@
 {% for worker, autoscaling in POD_AUTOSCALING_KEDA_CONFIG.items() %}
 ---
 apiVersion: keda.sh/v1alpha1
-kind: Keda
+kind: ScaledObject
 metadata:
   name: {{ worker }}-scaledobject
 spec:
