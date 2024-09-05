@@ -92,7 +92,7 @@ CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
         "avg_memory": "",
         "enable_vpa": False,
         "list_length": 40,
-        "queue_name": "edx.lms.core.default",
+        "queue_name": "edx.cms.core.default",
         "enable_keda": False,
     },
 }
