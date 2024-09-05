@@ -110,6 +110,29 @@ You can also override the HPA/VPA configuration for any of the services supporte
     - Using only one of the 2 mechanisms available is strongly recommended to prevent potential misconfiguration.
     - VPA components can be enabled/disabled for different deployments thanks to the ``enable_vpa`` key defined on every configured service. The VPAs are configured with the **UpdateMode** mode disabled, so they don't modify Pod resources automatically. Instead, they work as a dry-run, setting the recommended resources for the deployments in every VPA object.
 
+Celery autoscaling with Keda
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This plugin supports autoscaling of lms/cms workers based on the length of the queue of Celery tasks. For this to work you need to install the Keda helm chart on your cluster (2.15.1).
+Then you can update your workers configuration with:
+
+.. code-block:: python
+
+    from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
+
+    @AUTOSCALING_CONFIG.add()
+    def _add_my_autoscaling(autoscaling_config):
+        autoscaling_config["lms-worker"] = {
+            "list_length": 40,
+            "queue_name": "edx.lms.core.default",
+            "enable_keda": True,
+            # Make sure to disable hpa or else your cluster will not accept both resources.
+            "enable_hpa": False,
+        }
+        return autoscaling_config
+
+For advanced scaling and configuration of Celery deployments take a look at `tutor-contrib-celery <https://github.com/edunext/tutor-contrib-celery>`_.
+
 Migrating to Redwood version (18.x.x)
 -------------------------------------
 
