@@ -31,20 +31,6 @@ config = {
     "defaults": {
         "VERSION": __version__,
         "EXTRA_SERVICES": {},
-        "KEDA_CONFIG": {
-            "lms-worker": {
-                "min_replicas": 1,
-                "max_replicas": 10,
-                "list_length": 40,
-                "queue_name": "edx.lms.core.default",
-            },
-            "cms-worker": {
-                "min_replicas": 1,
-                "max_replicas": 10,
-                "list_length": 40,
-                "queue_name": "edx.cms.core.default",
-            },
-        },
     },
     "unique": {},
     "overrides": {},
@@ -74,6 +60,9 @@ CORE_AUTOSCALING_CONFIG = {
         "avg_cpu": 400,
         "avg_memory": "",
         "enable_vpa": False,
+        "list_length": 40,
+        "queue_name": "edx.lms.core.default",
+        "enable_keda": False,
     },
     "cms": {
         "enable_hpa": True,
@@ -98,6 +87,9 @@ CORE_AUTOSCALING_CONFIG = {
         "avg_cpu": 400,
         "avg_memory": "",
         "enable_vpa": False,
+        "list_length": 40,
+        "queue_name": "edx.lms.core.default",
+        "enable_keda": False,
     },
 }
 

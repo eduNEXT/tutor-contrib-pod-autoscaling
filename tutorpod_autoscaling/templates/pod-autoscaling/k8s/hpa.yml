@@ -1,5 +1,5 @@
 {% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
-{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_hpa") %}
+{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_hpa") and not autoscaling.get("enable_keda") %}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -31,4 +31,26 @@ spec:
         type: AverageValue
         averageValue: {{ autoscaling["avg_memory"] }}
   {%- endif %}
+{% endfor %}
+{% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
+{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_keda") and not autoscaling.get("enable_hpa") %}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ service }}-redis-autoscaling
+spec:
+  pollingInterval: 5
+  cooldownPeriod: 60
+  minReplicaCount: {{ autoscaling["min_replicas"] }}
+  maxReplicaCount: {{ autoscaling["max_replicas"] }}
+  scaleTargetRef:
+    name: {{ service }}
+  triggers:
+  - type: redis
+    metadata:
+      enableTLS: "false"
+      address: redis.{{K8S_NAMESPACE}}:{{REDIS_PORT}}
+      listLength: "{{ autoscaling["list_length"]}}"
+      listName: {{ autoscaling["queue_name"]}}
 {% endfor %}
