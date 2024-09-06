@@ -1,5 +1,6 @@
+{% if POD_AUTOSCALING_ENABLE_RESOURCE_MANAGEMENT %}
 {% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
-{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_hpa") %}
+{% for service, autoscaling in autoscaling_config.items() %}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,3 +23,4 @@ spec:
               cpu: {{ autoscaling["cpu_limit"] }}
               {%- endif %}
 {% endfor %}
+{% endif %}

@@ -110,6 +110,8 @@ You can also override the HPA/VPA configuration for any of the services supporte
     - Using only one of the 2 mechanisms available is strongly recommended to prevent potential misconfiguration.
     - VPA components can be enabled/disabled for different deployments thanks to the ``enable_vpa`` key defined on every configured service. The VPAs are configured with the **UpdateMode** mode disabled, so they don't modify Pod resources automatically. Instead, they work as a dry-run, setting the recommended resources for the deployments in every VPA object.
 
+3. In case you want to disable resource limits you can use the following setting: `POD_AUTOSCALING_ENABLE_RESOURCE_MANAGEMENT: false`
+
 Migrating to Redwood version (18.x.x)
 -------------------------------------
 
