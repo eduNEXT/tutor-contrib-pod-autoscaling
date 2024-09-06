@@ -1,0 +1,30 @@
+name: Release
+
+on: [workflow_dispatch]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Python Semantic Release
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Install dependencies
+      run: |
+        pip install -e .[dev]
+
+    - name: Run Semantic Release
+      run: make release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

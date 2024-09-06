@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tutor-contrib-pod-autoscaling"
+dynamic = ["version"]
+description = "pod-autoscaling plugin for Tutor"
+readme = "README.rst"
+license = {text = "AGPLv3"}
+authors = [{name = "Jhony Avella"}]
+requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+  "tutor>=18.0.0,<19.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "tutor[dev]>=18.0.0,<19.0.0",
+  "python-semantic-release",
+]
+
+[project.urls]
+homepage = "https://github.com/eduNEXT/tutor-contrib-pod-autoscaling"
+repository = "https://github.com/eduNEXT/tutor-contrib-pod-autoscaling"
+"Issue tracker" = "https://github.com/eduNEXT/tutor-contrib-pod-autoscaling/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*"]
+
+[project.entry-points."tutor.plugin.v1"]
+pod-autoscaling = "tutorpod_autoscaling.plugin"
+
+[tool.setuptools.dynamic]
+version = {attr = "tutorpod_autoscaling.__about__.__version__"}
+
+[tool.wheel]
+universal = true
+
+[tool.semantic_release]
+commit_message = "chore(release): preparing {version}"
+version_variables = [
+    "tutorpod_autoscaling/__about__.py:__version__",
+]
+
+[tool.semantic_release.branches.main]
+match = "(main|master)"
+
+[tool.semantic_release.changelog.environment]
+keep_trailing_newline = true
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+  "docs:",
+  "build:",
+  "style:",
+  "chore:",
+  "test:",
+  "revert:",
+  "perf:",
+  "refactor:",
+  "ci:",
+]
