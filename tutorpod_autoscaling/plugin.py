@@ -21,11 +21,11 @@ from .hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
 # The LMS and CMS (non-worker) memory limits are set to have a small amount of
 # overcommitment. This is to prevent the LMS and CMS from being slow for
 # learners and instructors, though workers may lag a bit behind with tasks.
-CMS_MEMORY_REQUEST_MB = 350
+CMS_MEMORY_REQUEST_MB = 800
 CMS_MAX_REPLICAS = 4
 CMS_WORKER_MEMORY_REQUEST_MB = 750
 
-LMS_MEMORY_REQUEST_MB = 350
+LMS_MEMORY_REQUEST_MB = 800
 LMS_MAX_REPLICAS = 4
 LMS_WORKER_MEMORY_REQUEST_MB = 750
 
@@ -41,48 +41,48 @@ CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
     "lms": {
         "enable_hpa": True,
         "memory_request": f"{LMS_MEMORY_REQUEST_MB}Mi",
-        "cpu_request": 0.25,
+        "cpu_request": 0.5,
         "memory_limit": f"{LMS_MEMORY_REQUEST_MB * 4}Mi",
         "cpu_limit": 1,
         "min_replicas": 1,
         "max_replicas": LMS_MAX_REPLICAS,
-        "avg_cpu": 300,
+        "avg_cpu": 100,
         "avg_memory": "",
         "enable_vpa": False,
     },
     "lms-worker": {
         "enable_hpa": True,
         "memory_request": f"{LMS_WORKER_MEMORY_REQUEST_MB}Mi",
-        "cpu_request": 0.175,
+        "cpu_request": 0.5,
         "memory_limit": f"{LMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
         "cpu_limit": 1,
         "min_replicas": 1,
         "max_replicas": int(LMS_MAX_REPLICAS * 1.5),
-        "avg_cpu": 400,
+        "avg_cpu": 100,
         "avg_memory": "",
         "enable_vpa": False,
     },
     "cms": {
         "enable_hpa": True,
         "memory_request": f"{CMS_MEMORY_REQUEST_MB}Mi",
-        "cpu_request": 0.25,
+        "cpu_request": 0.5,
         "memory_limit": f"{CMS_MEMORY_REQUEST_MB * 4}Mi",
         "cpu_limit": 1,
         "min_replicas": 1,
         "max_replicas": CMS_MAX_REPLICAS,
-        "avg_cpu": 300,
+        "avg_cpu": 100,
         "avg_memory": "",
         "enable_vpa": False,
     },
     "cms-worker": {
         "enable_hpa": True,
         "memory_request": f"{CMS_WORKER_MEMORY_REQUEST_MB}Mi",
-        "cpu_request": 0.175,
+        "cpu_request": 0.5,
         "memory_limit": f"{CMS_WORKER_MEMORY_REQUEST_MB * 4}Mi",
         "cpu_limit": 1,
         "min_replicas": 1,
         "max_replicas": int(CMS_MAX_REPLICAS * 1.5),
-        "avg_cpu": 400,
+        "avg_cpu": 100,
         "avg_memory": "",
         "enable_vpa": False,
     },
