@@ -21,6 +21,17 @@ format: ## Format code automatically
 isort: ##  Sort imports. This target is not mandatory because the output may be incompatible with black formatting. Provided for convenience purposes.
 	isort --skip=templates ${SRC_DIRS}
 
+release: ## release a new version
+	@echo "Releasing a new version."
+	@echo "This is a remote release, it will push to the remote repository."
+	semantic-release -vv version --changelog --push --tag --commit
+
+local-release:
+	@echo "Releasing a new version."
+	@echo "This is a local release, it will not push to the remote repository."
+	@echo "You can push the changes and release manually."
+	semantic-release -vv version --changelog --commit --no-push
+
 ESCAPE = 
 help: ## Print this help
 	@grep -E '^([a-zA-Z_-]+:.*?## .*|######* .+)$$' Makefile \
