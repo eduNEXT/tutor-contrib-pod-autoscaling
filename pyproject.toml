@@ -23,13 +23,18 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "tutor>=19.0.0,<20.0.0"
+  "tutor @ git+https://github.com/overhangio/tutor.git@sumac",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "tutor[dev]>=19.0.0,<20.0.0",
+  # "tutor[dev]>=19.0.0,<20.0.0",
+  "tutor @ git+https://github.com/overhangio/tutor.git@sumac",
   "python-semantic-release",
+  "black",
+  "mypy",
+  "pylint",
+  "isort",
 ]
 
 [project.urls]
