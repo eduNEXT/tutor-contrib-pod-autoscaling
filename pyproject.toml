@@ -23,12 +23,12 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "tutor>=18.0.0,<19.0.0"
+  "tutor>=19.0.0,<20.0.0"
 ]
 
 [project.optional-dependencies]
 dev = [
-  "tutor[dev]>=18.0.0,<19.0.0",
+  "tutor[dev]>=19.0.0,<20.0.0",
   "python-semantic-release",
 ]
 
