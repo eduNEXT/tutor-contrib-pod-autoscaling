@@ -28,3 +28,12 @@ jobs:
       run: make release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build package
+      run: |
+        python -m build --sdist --wheel --outdir dist/ .
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@v1.10.3
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}

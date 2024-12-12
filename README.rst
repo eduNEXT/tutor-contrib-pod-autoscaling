@@ -17,7 +17,7 @@ Installation
 
 ::
 
-    pip install git+https://github.com/eduNEXT/tutor-contrib-pod-autoscaling
+    pip install tutor-contrib-pod-autoscaling
 
 Configuration
 -------------

@@ -24,13 +24,13 @@ isort: ##  Sort imports. This target is not mandatory because the output may be 
 release: ## release a new version
 	@echo "Releasing a new version."
 	@echo "This is a remote release, it will push to the remote repository."
-	semantic-release -vv version --changelog --push --tag --commit
+	semantic-release --strict version --changelog --push --tag --commit
 
 local-release:
 	@echo "Releasing a new version."
 	@echo "This is a local release, it will not push to the remote repository."
 	@echo "You can push the changes and release manually."
-	semantic-release -vv version --changelog --commit --no-push
+	semantic-release version --changelog --commit --no-push
 
 ESCAPE = 
 help: ## Print this help
