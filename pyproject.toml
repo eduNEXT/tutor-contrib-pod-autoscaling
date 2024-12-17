@@ -27,11 +27,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "python-semantic-release",
   "black",
+  "build",
+  "isort",
   "mypy",
   "pylint",
-  "isort",
+  "python-semantic-release",
 ]
 
 [project.urls]
