@@ -9,27 +9,29 @@ description = "pod-autoscaling plugin for Tutor"
 readme = "README.rst"
 license = {text = "AGPLv3"}
 authors = [{name = "Jhony Avella"}]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: GNU Affero General Public License v3",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "tutor>=18.0.0,<19.0.0"
+  "tutor>=19.0.0,<20.0.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "tutor[dev]>=18.0.0,<19.0.0",
   "python-semantic-release",
+  "black",
+  "mypy",
+  "pylint",
+  "isort",
 ]
 
 [project.urls]
