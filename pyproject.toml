@@ -22,7 +22,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "tutor>=19.0.0,<20.0.0",
+  "tutor~=20.0",
 ]
 
 [project.optional-dependencies]
