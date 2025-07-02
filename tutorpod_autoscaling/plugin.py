@@ -93,7 +93,7 @@ CORE_AUTOSCALING_CONFIG: dict[str, AUTOSCALING_ATTRS_TYPE] = {
 # remove them.
 @AUTOSCALING_CONFIG.add(priority=tutor_hooks.priorities.HIGH)
 def _add_core_autoscaling_config(
-    scaling_config: dict[str, AUTOSCALING_ATTRS_TYPE]
+    scaling_config: dict[str, AUTOSCALING_ATTRS_TYPE],
 ) -> dict[str, AUTOSCALING_ATTRS_TYPE]:
     scaling_config.update(CORE_AUTOSCALING_CONFIG)
     return scaling_config
