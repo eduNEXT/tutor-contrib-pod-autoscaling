@@ -1,5 +1,5 @@
 {% set autoscaling_config = dict(iter_autoscaling_config().items(), **POD_AUTOSCALING_EXTRA_SERVICES) %}
-{% for service, autoscaling in autoscaling_config.items() if autoscaling.get("enable_hpa") %}
+{% for service, autoscaling in autoscaling_config.items() if (autoscaling.get("memory_request") or autoscaling.get("memory_limit") or autoscaling.get("cpu_request") or autoscaling.get("cpu_limit")) %}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -12,12 +12,16 @@ spec:
         - name: {{ service }}
           resources:
             requests:
+              {%- if autoscaling["memory_request"] %}
               memory: {{ autoscaling["memory_request"] }}
+              {%- endif %}
               {%- if autoscaling["cpu_request"] > 0 %}
               cpu: {{ autoscaling["cpu_request"] }}
               {%- endif %}
             limits:
+              {%- if autoscaling["memory_limit"] %}
               memory: {{ autoscaling["memory_limit"] }}
+              {%- endif %}
               {%- if autoscaling["cpu_limit"] > 0 %}
               cpu: {{ autoscaling["cpu_limit"] }}
               {%- endif %}
