@@ -1,17 +1,14 @@
 from __future__ import annotations
 
+import importlib.resources
 import os
 import os.path
 from glob import glob
 
-import importlib_resources
-import tutor
 from tutor import hooks as tutor_hooks
 
-from typing import Dict, Union
-
-from .__about__ import __version__
-from .hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
+from tutorpod_autoscaling.__about__ import __version__
+from tutorpod_autoscaling.hooks import AUTOSCALING_ATTRS_TYPE, AUTOSCALING_CONFIG
 
 ################# Autoscaling
 # Here comes the default common settings for the autoscaling. Some resources
@@ -29,9 +26,7 @@ LMS_MEMORY_REQUEST_MB = 800
 LMS_MAX_REPLICAS = 4
 LMS_WORKER_MEMORY_REQUEST_MB = 750
 
-config: Dict[
-    str, Dict[str, Union[bool, str, float, dict[str, AUTOSCALING_ATTRS_TYPE]]]
-] = {
+config: dict[str, dict[str, bool | str | float | dict[str, AUTOSCALING_ATTRS_TYPE]]] = {
     "defaults": {"VERSION": __version__, "EXTRA_SERVICES": {}},
     "unique": {},
     "overrides": {},
@@ -99,7 +94,7 @@ def _add_core_autoscaling_config(
     return scaling_config
 
 
-@tutor.hooks.lru_cache
+@tutor_hooks.lru_cache
 def get_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
     """
     This function is cached for performance.
@@ -118,31 +113,19 @@ def iter_autoscaling_config() -> dict[str, AUTOSCALING_ATTRS_TYPE]:
 
 # Add configuration entries
 tutor_hooks.Filters.CONFIG_DEFAULTS.add_items(
-    [
-        (f"POD_AUTOSCALING_{key}", value)
-        for key, value in config.get("defaults", {}).items()
-    ]
+    [(f"POD_AUTOSCALING_{key}", value) for key, value in config.get("defaults", {}).items()]
 )
 tutor_hooks.Filters.CONFIG_UNIQUE.add_items(
-    [
-        (f"POD_AUTOSCALING_{key}", value)
-        for key, value in config.get("unique", {}).items()
-    ]
+    [(f"POD_AUTOSCALING_{key}", value) for key, value in config.get("unique", {}).items()]
 )
-tutor_hooks.Filters.CONFIG_OVERRIDES.add_items(
-    list(config.get("overrides", {}).items())
-)
+tutor_hooks.Filters.CONFIG_OVERRIDES.add_items(list(config.get("overrides", {}).items()))
 
 
 # Add the "templates" folder as a template root
-tutor_hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    str(importlib_resources.files("tutorpod_autoscaling") / "templates")
-)
+tutor_hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(str(importlib.resources.files("tutorpod_autoscaling") / "templates"))
 # Render the "build" and "apps" folders
 tutor_hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     [
-        ("pod-autoscaling/build", "plugins"),
-        ("pod-autoscaling/apps", "plugins"),
         ("pod-autoscaling/k8s", "plugins"),
     ],
 )
@@ -155,10 +138,6 @@ tutor_hooks.Filters.ENV_TEMPLATE_VARIABLES.add_items(
 )
 
 # Load patches from files
-for path in glob(
-    str(importlib_resources.files("tutorpod_autoscaling") / "patches" / "*")
-):
+for path in glob(str(importlib.resources.files("tutorpod_autoscaling") / "patches" / "*")):
     with open(path, encoding="utf-8") as patch_file:
-        tutor_hooks.Filters.ENV_PATCHES.add_item(
-            (os.path.basename(path), patch_file.read())
-        )
+        tutor_hooks.Filters.ENV_PATCHES.add_item((os.path.basename(path), patch_file.read()))

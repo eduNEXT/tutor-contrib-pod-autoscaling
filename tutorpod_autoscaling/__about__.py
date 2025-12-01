@@ -1,1 +1,3 @@
-__version__ = "20.0.0"
+from importlib import metadata
+
+__version__ = metadata.version("tutor-contrib-pod-autoscaling")

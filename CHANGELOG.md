@@ -1,5 +1,24 @@
 # CHANGELOG
 
+<!--
+All enhancements and changes will be documented in this file.  It adheres to
+the structure of http://keepachangelog.com/ ,
+
+This project adheres to Semantic Versioning (http://semver.org/).
+-->
+
+## Unreleased
+
+See the fragment files in the [changelog.d/ directory](./changelog.d).
+
+<!-- scriv-insert-here -->
+
+<a id='changelog-20.0.0'></a>
+## v20.0.0 (2025-07-02)
+
+### Added
+
+- Support for the Teak release.
 
 ## v19.0.0 (2024-12-17)
 

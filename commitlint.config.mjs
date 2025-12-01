@@ -1,6 +1,6 @@
 // See: https://commitlint.js.org/#/reference-configuration for details
 // on the configuration file
-module.exports = {
+export default {
   extends: ['@commitlint/config-conventional'],
 
   rules: {
