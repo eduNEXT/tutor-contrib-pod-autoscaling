@@ -2,6 +2,9 @@ version = 1
 revision = 3
 requires-python = ">=3.10"
 
+[manifest]
+overrides = [{ name = "tutor", git = "https://github.com/overhangio/tutor?rev=ulmo" }]
+
 [[package]]
 name = "appdirs"
 version = "1.4.4"
@@ -782,8 +785,8 @@ wheels = [
 
 [[package]]
 name = "tutor"
-version = "20.0.2"
-source = { registry = "https://pypi.org/simple" }
+version = "21.0.0"
+source = { git = "https://github.com/overhangio/tutor?rev=ulmo#43da7ac311b5d4b8245ab292a25491c7974814db" }
 dependencies = [
     { name = "appdirs" },
     { name = "click" },
@@ -797,11 +800,10 @@ dependencies = [
     { name = "pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/cd/f1fd08e2cc66139ffa5355d56b84bb6e85b0d1c68d6c49fdb0f09278814b/tutor-20.0.2.tar.gz", hash = "sha256:b8a2ff7d865ede318768e4e6cde7dc2d0eda798bf791393473483acd9b4a0fb4", size = 149567, upload-time = "2025-10-27T11:03:16.334Z" }
 
 [[package]]
 name = "tutor-contrib-pod-autoscaling"
-version = "20.0.0"
+version = "21.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "tutor" },
@@ -815,7 +817,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tutor", specifier = "~=20.0" }]
+requires-dist = [{ name = "tutor", specifier = "~=21.0" }]
 
 [package.metadata.requires-dev]
 dev = [

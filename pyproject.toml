@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-pod-autoscaling"
-version = "20.0.0"
+version = "21.0.0"
 description = "pod-autoscaling plugin for Tutor"
 readme = "README.md"
 license-files = ["LICENSE"]
@@ -18,7 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-  "tutor~=20.0",
+  "tutor~=21.0",
 ]
 
 [project.urls]
@@ -55,6 +55,12 @@ entry_title_template = "file: changelog.d/scriv/entry_title.md.j2"
 [tool.uv.build-backend]
 module-root = "."
 module-name = "tutorpod_autoscaling"
+
+# TODO: Delete before merging
+[tool.uv]
+override-dependencies = [
+    "tutor @ git+https://github.com/overhangio/tutor@ulmo",
+]
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
