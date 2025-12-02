@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+env:
+  UV_VERSION: 0.9.13
+
+jobs:
+  commitlint:
+    name: Commit Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v6
+
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run quality checks
+        run: make quality
+
+      - name: Validate package build
+        run: uv build
+
+  release:
+    name: Build and publish package
+    needs: tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      # IMPORTANT: this permission is mandatory for Trusted Publishing
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          version: ${{ env.UV_VERSION }}
+
+      - name: Build packages
+        run: uv build
+
+      - name: Create Release
+        run: |
+          VERSION=$(uv version --short)
+          uv run scriv print --version $VERSION --output release-body
+
+          gh release create "v${VERSION}" \
+            --title  ${VERSION} \
+            --target "${{ github.sha }}" \
+            --prerelease \
+            --notes-file release-body \
+            dist/*
+
+      - name: Publish to PyPI
+        run: |
+          uv publish \
+              --trusted-publishing always \
+              dist/*

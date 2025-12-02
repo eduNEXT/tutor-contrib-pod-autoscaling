@@ -24,4 +24,4 @@ class AUTOSCALING_ATTRS_TYPE(TypedDict):
     enable_vpa: bool
 
 
-AUTOSCALING_CONFIG: Filter[dict[str, AUTOSCALING_ATTRS_TYPE], []] = Filter()
+AUTOSCALING_CONFIG: Filter[dict[str, AUTOSCALING_ATTRS_TYPE], tuple] = Filter()

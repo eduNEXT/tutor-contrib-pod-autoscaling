@@ -1,36 +1,20 @@
 .DEFAULT_GOAL := help
-.PHONY: docs
-SRC_DIRS = ./tutorpod_autoscaling
-BLACK_OPTS = --exclude templates ${SRC_DIRS}
+.PHONY: help
 
-# Warning: These checks are not necessarily run on every PR.
-test: test-lint test-types test-format  # Run some static checks.
+quality: ## Run linters
+	uv run ruff check
+	uv run ruff format --diff
+	uv run ty   check
 
-test-format: ## Run code formatting tests
-	black --check --diff $(BLACK_OPTS)
+quality-fix: ## Run automatic linter fixes
+	uv run ruff format
+	uv run ruff check --fix
 
-test-lint: ## Run code linting tests
-	pylint --errors-only --enable=unused-import,unused-argument --ignore=templates --ignore=docs/_ext ${SRC_DIRS}
+changelog-entry: ## Run scriv to create a changelog entry
+	uv run scriv create
 
-test-types: ## Run type checks.
-	mypy --exclude=templates --ignore-missing-imports --implicit-reexport --strict ${SRC_DIRS}
-
-format: ## Format code automatically
-	black $(BLACK_OPTS)
-
-isort: ##  Sort imports. This target is not mandatory because the output may be incompatible with black formatting. Provided for convenience purposes.
-	isort --skip=templates ${SRC_DIRS}
-
-release: ## release a new version
-	@echo "Releasing a new version."
-	@echo "This is a remote release, it will push to the remote repository."
-	semantic-release --strict version --changelog --push --tag --commit
-
-local-release:
-	@echo "Releasing a new version."
-	@echo "This is a local release, it will not push to the remote repository."
-	@echo "You can push the changes and release manually."
-	semantic-release version --changelog --commit --no-push
+changelog-collect: ## Collect all the changelog entries and rebuild CHANGELOG.md
+	uv run scriv collect
 
 ESCAPE = 
 help: ## Print this help
