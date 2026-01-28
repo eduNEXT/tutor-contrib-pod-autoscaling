@@ -51,6 +51,7 @@ jobs:
     permissions:
       # IMPORTANT: this permission is mandatory for Trusted Publishing
       id-token: write
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -65,6 +66,8 @@ jobs:
         run: uv build
 
       - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           VERSION=$(uv version --short)
           uv run scriv print --version $VERSION --output release-body
@@ -72,7 +75,6 @@ jobs:
           gh release create "v${VERSION}" \
             --title  ${VERSION} \
             --target "${{ github.sha }}" \
-            --prerelease \
             --notes-file release-body \
             dist/*
 
