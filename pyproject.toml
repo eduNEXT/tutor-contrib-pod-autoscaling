@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-pod-autoscaling"
-version = "20.0.0"
+version = "21.0.0"
 description = "pod-autoscaling plugin for Tutor"
 readme = "README.md"
 license-files = ["LICENSE"]
@@ -18,7 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-  "tutor~=20.0",
+  "tutor~=21.0",
 ]
 
 [project.urls]

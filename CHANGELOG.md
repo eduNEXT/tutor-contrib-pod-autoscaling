@@ -13,6 +13,13 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-21.0.0'></a>
+## 21.0.0 — 2026-01-28
+
+### Added
+
+- Support for the Ulmo release
+
 <a id='changelog-20.0.0'></a>
 ## v20.0.0 (2025-07-02)
 
