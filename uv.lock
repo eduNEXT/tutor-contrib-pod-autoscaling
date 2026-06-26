@@ -1406,7 +1406,7 @@ wheels = [
 
 [[package]]
 name = "tutor"
-version = "21.0.9"
+version = "22.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "appdirs" },
@@ -1421,11 +1421,11 @@ dependencies = [
     { name = "pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d9/93/0660cdcfbee8a2e0e7b0e3bdd0dcf73ec5c1fdbecb5ad66a696078be681d/tutor-21.0.9.tar.gz", hash = "sha256:4c7db9b1486ab9266a63090b082903fc416481ac20be96ce41b0c609ae21a139", size = 116852, upload-time = "2026-08-04T11:31:53.819Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/6c/f58136bcbc099fb97ecb0acca29fa89a6b77d19f2c4405c60a8faff2c1d6/tutor-22.0.0.tar.gz", hash = "sha256:395974598ca2726b19726edfca81dab40f03341288e775ac80c1687d4b8033bb", size = 117037, upload-time = "2026-08-05T11:25:12.348Z" }
 
 [[package]]
 name = "tutor-contrib-pod-autoscaling"
-version = "21.0.0"
+version = "22.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "tutor" },
@@ -1439,7 +1439,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "tutor", specifier = "~=21.0" }]
+requires-dist = [{ name = "tutor", specifier = "~=22.0" }]
 
 [package.metadata.requires-dev]
 dev = [
