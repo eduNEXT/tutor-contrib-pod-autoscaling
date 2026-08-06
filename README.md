@@ -53,6 +53,7 @@ settings for different services. There are 2 mechanisms to do so:
 ``` python
 from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
 
+
 @AUTOSCALING_CONFIG.add()
 def _add_my_autoscaling(autoscaling_config):
     autoscaling_config["forum"] = {
@@ -81,6 +82,7 @@ supported by default, for instance, LMS:
 
 ``` python
 from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
+
 
 @AUTOSCALING_CONFIG.add()
 def _add_my_autoscaling(autoscaling_config):
@@ -170,6 +172,7 @@ The equivalent configuration for the 18.x.x version using the
 
 ``` python
 from tutorpod_autoscaling.hooks import AUTOSCALING_CONFIG
+
 
 @AUTOSCALING_CONFIG.add()
 def _add_my_autoscaling(autoscaling_config):

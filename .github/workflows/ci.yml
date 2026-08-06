@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  UV_VERSION: 0.9.13
+  UV_VERSION: 0.12.2
 
 jobs:
   commitlint:
