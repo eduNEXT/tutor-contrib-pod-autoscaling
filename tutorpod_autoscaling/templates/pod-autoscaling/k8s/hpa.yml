@@ -31,4 +31,44 @@ spec:
         type: AverageValue
         averageValue: {{ autoscaling["avg_memory"] }}
   {%- endif %}
+  {%- if autoscaling.get("behavior") %}
+  {%- set beh = autoscaling["behavior"] %}
+  behavior:
+  {%- if beh.get("scaleDown") %}
+  {%- set sd = beh["scaleDown"] %}
+    scaleDown:
+  {%- if sd.get("stabilizationWindowSeconds") is not none %}
+      stabilizationWindowSeconds: {{ sd["stabilizationWindowSeconds"] }}
+  {%- endif %}
+  {%- if sd.get("selectPolicy") %}
+      selectPolicy: {{ sd["selectPolicy"] }}
+  {%- endif %}
+  {%- if sd.get("policies") %}
+      policies:
+  {%- for p in sd["policies"] %}
+      - type: {{ p["type"] }}
+        value: {{ p["value"] }}
+        periodSeconds: {{ p["periodSeconds"] }}
+  {%- endfor %}
+  {%- endif %}
+  {%- endif %}
+  {%- if beh.get("scaleUp") %}
+  {%- set su = beh["scaleUp"] %}
+    scaleUp:
+  {%- if su.get("stabilizationWindowSeconds") is not none %}
+      stabilizationWindowSeconds: {{ su["stabilizationWindowSeconds"] }}
+  {%- endif %}
+  {%- if su.get("selectPolicy") %}
+      selectPolicy: {{ su["selectPolicy"] }}
+  {%- endif %}
+  {%- if su.get("policies") %}
+      policies:
+  {%- for p in su["policies"] %}
+      - type: {{ p["type"] }}
+        value: {{ p["value"] }}
+        periodSeconds: {{ p["periodSeconds"] }}
+  {%- endfor %}
+  {%- endif %}
+  {%- endif %}
+  {%- endif %}
 {% endfor %}

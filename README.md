@@ -67,6 +67,7 @@ def _add_my_autoscaling(autoscaling_config):
         "avg_cpu": 300,
         "avg_memory": "",
         "enable_vpa": False,
+        "behavior": {},
     }
     return autoscaling_config
 ```
@@ -97,6 +98,7 @@ def _add_my_autoscaling(autoscaling_config):
         "avg_cpu": 70,
         "avg_memory": "",
         "enable_vpa": False,
+        "behavior": {},
     }
     return autoscaling_config
 ```
@@ -117,6 +119,7 @@ POD_AUTOSCALING_EXTRA_SERVICES:
         avg_cpu: 300
         avg_memory: ''
         enable_vpa: true
+        behavior: {}
     lms:
         enable_hpa: true
         memory_request: 1Gi
@@ -128,6 +131,7 @@ POD_AUTOSCALING_EXTRA_SERVICES:
         avg_cpu: 70
         avg_memory: ''
         enable_vpa: true
+        behavior: {}
 ```
 
 > [!NOTE]
@@ -146,6 +150,23 @@ POD_AUTOSCALING_EXTRA_SERVICES:
 >   with the **UpdateMode** mode disabled, so they don't modify Pod resources
 >   automatically. Instead, they work as a dry-run, setting the recommended
 >   resources for the deployments in every VPA object.
+
+### Configuring HPA scaling behaviour
+
+> [!NOTE]
+> The `behavior` field is available from version 22.1.0 (Verawood) onward.
+
+Set `behavior` to control HPA scale-up and scale-down dynamics. An empty dict (`{}`) omits the block, preserving Kubernetes defaults. See the [Kubernetes HPA behaviour docs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configuring-hpa-behavior) for all supported fields.
+
+``` yaml
+behavior:
+  scaleDown:
+    stabilizationWindowSeconds: 900
+    policies:
+    - type: Percent
+      value: 10
+      periodSeconds: 120
+```
 
 ## Migrating to Redwood version (18.x.x)
 
@@ -187,6 +208,7 @@ def _add_my_autoscaling(autoscaling_config):
         "avg_cpu": 300,
         "avg_memory": "",
         "enable_vpa": False,
+        "behavior": {},
     }
     return autoscaling_config
 ```

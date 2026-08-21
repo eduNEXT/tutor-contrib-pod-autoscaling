@@ -11,6 +11,23 @@ from typing import TypedDict
 from tutor.core.hooks import Filter
 
 
+class HPAScalingPolicyType(TypedDict):
+    type: str
+    value: int
+    periodSeconds: int
+
+
+class HPAScalingRulesType(TypedDict, total=False):
+    stabilizationWindowSeconds: int
+    selectPolicy: str  # Max | Min | Disabled
+    policies: list[HPAScalingPolicyType]
+
+
+class HPABehaviorType(TypedDict, total=False):
+    scaleDown: HPAScalingRulesType
+    scaleUp: HPAScalingRulesType
+
+
 class AUTOSCALING_ATTRS_TYPE(TypedDict):
     enable_hpa: bool
     memory_limit: str
@@ -22,6 +39,7 @@ class AUTOSCALING_ATTRS_TYPE(TypedDict):
     avg_cpu: int
     avg_memory: str
     enable_vpa: bool
+    behavior: HPABehaviorType
 
 
 AUTOSCALING_CONFIG: Filter[dict[str, AUTOSCALING_ATTRS_TYPE], []] = Filter()
