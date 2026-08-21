@@ -13,6 +13,15 @@ See the fragment files in the [changelog.d/ directory](./changelog.d).
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-22.1.0'></a>
+## 22.1.0 — 2026-08-21
+
+### Added
+
+- `behavior` block to control HPA scale-up and scale-down dynamics.
+  See the [Kubernetes HPA behaviour docs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configuring-hpa-behavior)
+  for all supported fields.
+
 <a id='changelog-22.0.0'></a>
 ## 22.0.0 — 2026-06-26
 
