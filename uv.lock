@@ -1425,7 +1425,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/d7/6c/f58136bcbc099fb97
 
 [[package]]
 name = "tutor-contrib-pod-autoscaling"
-version = "22.0.0"
+version = "22.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "tutor" },

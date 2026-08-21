@@ -1,6 +1,6 @@
 [project]
 name = "tutor-contrib-pod-autoscaling"
-version = "22.0.0"
+version = "22.1.0"
 description = "pod-autoscaling plugin for Tutor"
 readme = "README.md"
 license-files = ["LICENSE"]
