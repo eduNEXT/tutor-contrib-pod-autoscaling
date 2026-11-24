@@ -17,7 +17,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-  "tutor~=22.0",
+  "tutor>=22.0,<24.0",
 ]
 
 [project.urls]
